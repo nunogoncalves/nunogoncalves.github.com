@@ -1,11 +1,36 @@
 {
   "name" : "Nuno Gonçalves",
-  "title" : "Software Developer",
+  "title" : "iOS Developer",
+  "email" : "goncalves.cm.nuno@gmail.com",
+  "email_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/email.png",
+  "location" : "Lisbon, Portugal",
   "avatar_url" : "https://avatars3.githubusercontent.com/u/3007012",
-  "company" : {
-    "name" : "Linkedcare",
-  },
   "projects" : [],
+  "company": {
+    "name" : "Linkedcare",
+    "link" : "http://www.linkedcare.com/en/index.html",
+    "location" : "Lisbon, Portugal",
+    "dates" : "Jan 2012 - Present"
+  },
+  "history" : {
+    "companies" : [{
+      "name" : "LatitudeN GmbH",
+      "link" : "http://www.latituden.com/home_en.html",
+      "location" : "Darmstadt, Germany",
+      "dates" : "Jan 2011 - Jul 2011"
+    }, {
+      "name" : "Linkedcare",
+      "link" : "http://www.linkedcare.com/en/index.html",
+      "location" : "Lisbon, Portugal",
+      "dates" : "Jan 2012 - Present"
+    }],
+    "personal_projects" : []
+  },
+  "technical_stuff" : {
+    "languages" : [
+      "Swift", "Ruby", "JavaScript", "Java"
+    ]
+  },
   "social_sources" : [{
       "name" : "Github",
       "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/github.png",
