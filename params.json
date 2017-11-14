@@ -37,24 +37,27 @@
       "link" : "https://github.com/nunogoncalves"
     }, {
       "name" : "Medium",
-      "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/medium.png",
+      "image_url": "https://www.dropbox.com/s/o0dla2hn4icv4mo/medium.png?dl=1",
       "link" : "https://medium.com/@nunogonalves"
     }, {
       "name" : "Linkedin",
-      "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/linkedin.png",
+      "image_url": "https://www.dropbox.com/s/0unhgzn478zgujq/linkedin.png?dl=1",
       "link" : "https://pt.linkedin.com/in/goncalvescmnuno"
     }, {
       "name" : "Twitter",
-      "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/twitter.png",
+      "image_url": "https://www.dropbox.com/s/7be55corgkith1t/twitter.png?dl=1",
       "link" : "https://twitter.com/goncalvescmnuno"
     }, {
       "name" : "StackOverflow",
-      "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/stackoverflow.png",
+      "image_url": "https://www.dropbox.com/s/v0e9zbnt1o4q3lv/stackoverflow.png?dl=1",
       "link" : "http://stackoverflow.com/users/919445/nuno-gon%C3%A7alves"
     }, {
       "name" : "App Store",
-      "image_url": "https://dl.dropboxusercontent.com/u/2001692/imagesshelf/GithubPages/appstore.png",
+      "image_url": "https://www.dropbox.com/s/6niytlc13z1zdy2/appstore.png?dl=1",
       "link" : "https://itunes.apple.com/developer/nuno-goncalves/id990207056"
-    }
+    }, {
+      "name" : "CV",
+      "image_url": "https://www.dropbox.com/s/9pxk2ak658fhgdr/resume.png?dl=1",
+      "link" : "https://github.com/nunogoncalves/resume/blob/master/Resume/Resume.pdf"
   ]
 }
