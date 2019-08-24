@@ -2,7 +2,7 @@
   "name" : "Nuno Gonçalves",
   "title" : "iOS Developer",
   "email" : "goncalves.cm.nuno@gmail.com",
-  "email_url": "https://www.dropbox.com/s/pl0vznj5xqx7wd8/email.png?dl=1",
+  "email_url": "images/SocialSources/email.png",
   "location" : "Lisbon, Portugal",
   "avatar_url" : "https://avatars3.githubusercontent.com/u/3007012",
   "projects" : [],
@@ -22,7 +22,17 @@
       "name" : "Linkedcare",
       "link" : "http://www.linkedcare.com/en/index.html",
       "location" : "Lisbon, Portugal",
-      "dates" : "Jan 2012 - Present"
+      "dates" : "Jan 2012 - Mar 2016"
+    }, {
+      "name" : "Globestamp",
+      "link" : "https://www.globestamp.com",
+      "location" : "Lisbon, Portugal",
+      "dates" : "Apr 2016 - Mar 2017"
+    }, {
+      "name" : "Farfetch",
+      "link" : "https://www.farfetch.com",
+      "location" : "Lisbon, Portugal",
+      "dates" : "Apr 2017 - Present"
     }],
     "personal_projects" : []
   },
@@ -33,31 +43,31 @@
   },
   "social_sources" : [{
       "name" : "Github",
-      "image_url": "https://www.dropbox.com/s/gc1xehag9mo81ec/github.png?dl=1",
+      "image_url": "images/SocialSources/github.png",
       "link" : "https://github.com/nunogoncalves"
     }, {
       "name" : "Medium",
-      "image_url": "https://www.dropbox.com/s/o0dla2hn4icv4mo/medium.png?dl=1",
+      "image_url": "images/SocialSources/medium.png",
       "link" : "https://medium.com/@nunogonalves"
     }, {
       "name" : "Linkedin",
-      "image_url": "https://www.dropbox.com/s/0unhgzn478zgujq/linkedin.png?dl=1",
+      "image_url": "images/SocialSources/linkedin.png",
       "link" : "https://pt.linkedin.com/in/goncalvescmnuno"
     }, {
       "name" : "Twitter",
-      "image_url": "https://www.dropbox.com/s/7be55corgkith1t/twitter.png?dl=1",
+      "image_url": "images/SocialSources/twitter.png",
       "link" : "https://twitter.com/goncalvescmnuno"
     }, {
       "name" : "StackOverflow",
-      "image_url": "https://www.dropbox.com/s/v0e9zbnt1o4q3lv/stackoverflow.png?dl=1",
+      "image_url": "images/SocialSources/stackoverflow.png",
       "link" : "http://stackoverflow.com/users/919445/nuno-gon%C3%A7alves"
     }, {
       "name" : "App Store",
-      "image_url": "https://www.dropbox.com/s/6niytlc13z1zdy2/appstore.png?dl=1",
+      "image_url": "images/SocialSources/appstore.png",
       "link" : "https://itunes.apple.com/developer/nuno-goncalves/id990207056"
     }, {
       "name" : "CV",
-      "image_url": "https://www.dropbox.com/s/9pxk2ak658fhgdr/resume.png?dl=1",
+      "image_url": "images/SocialSources/resume.png",
       "link" : "https://github.com/nunogoncalves/resume/blob/master/Resume/Resume.pdf"
     }
   ]
