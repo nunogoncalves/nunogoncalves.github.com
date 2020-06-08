@@ -1,0 +1,22 @@
+#info_container {
+  width: 200px;
+  height: 200px;
+  background: yellow;
+  position: absolute;
+}
+
+#inner_container {
+  position: relative;
+  height: 100%;
+}
+
+#info_container #buttons_container {
+  position: absolute;
+  bottom: 0px;
+}
+
+#info_container img {
+  position: relative;
+  width: 20px !important;
+  height: 20px !important;
+}

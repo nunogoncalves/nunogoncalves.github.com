@@ -1,0 +1,84 @@
+table {
+  border-collapse:collapse;
+}
+
+table td {
+  padding: 0px;
+}
+
+.outter_game {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inner_game {
+  position: relative;
+  margin: 10px;
+}
+
+.northwest_td,
+.north_td,
+.west_td,
+.center_td,
+.southwest_td,
+.south_td {
+  border-right-style: solid;
+  border-color: #5A7FFA;
+  border-right-width: 5px;
+}
+
+.west_td,
+.center_td,
+.east_td {
+  border-top-style: solid;
+  border-top-width: 5px;
+  border-color: #5A7FFA;
+  border-bottom-style: solid;
+  border-bottom-width: 5px;
+}
+
+.won {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 0px;
+  margin-right: 0px;
+  width: 100% !important;
+  height: 100% !important;
+  background-color: rgba(255, 255, 255, 0.88);
+}
+
+.canPlayHere {
+  background: red;
+}
+
+.inner_game td {
+  height: 65px;
+  width: 65px;
+}
+
+.inner_game img {
+  height: 60px;
+  width: 60px;
+}
+
+.inner_game td:nth-child(2) {
+  border-left-style: solid;
+  border-left-width: 3px;
+  border-color: #33F211;
+  border-right-style: solid;
+  border-right-width: 3px;
+}
+
+.inner_game tr:nth-child(2) td {
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-color: #33F211;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+}
+
+.playHereNext {
+  background-color: #D1E8FF;
+}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/game_table.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/alertify.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/alertify.core.css">
+    <link rel="stylesheet" type="text/css" href="css/plugins/alertify.default.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+  </head>
+  <body>
+    <div id='info_container'>
+      <div id="inner_container">
+        <span>Next Player: </span><span id="next_player"><img src="img/nought.png" alt=""></span></br>
+        <span>Crosses: </span><span id="next_player">noughts</span></br>
+        <span>Nougts: </span><span id="next_player">noughts</span>
+        <div id="buttons_container">
+          <button onclick="$.ticTacToe.restart();">Restart</button>
+        </div>
+      </div>
+    </div>
+    <table class="outter_game">
+      <tr>
+        <td class="northwest_td">
+          <table class="inner_game northwest" data-compass="northwest">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="north_td">
+          <table class="inner_game north" data-compass="north">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="northest_td">
+          <table class="inner_game northeast"  data-compass="northest"
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td class="west_td">
+          <table class="inner_game inner_game west" data-compass="west">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="center_td">
+          <table class="inner_game inner_game center" data-compass="center">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="east_td">
+          <table class="inner_game inner_game east" data-compass="east">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td class="southwest_td">
+          <table class="inner_game southwest" data-compass="southwest">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="south_td">
+          <table class="inner_game south" data-compass="south">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+        <td class="southest_td">
+          <table class="inner_game southeast" data-compass="southest">
+            <tr>
+              <td data-compass="northwest"></td>
+              <td data-compass="north"></td>
+              <td data-compass="northeast"></td>
+            </tr>
+            <tr>
+              <td data-compass="west"></td>
+              <td data-compass="center"></td>
+              <td data-compass="east"></td>
+            </tr>
+            <tr>
+              <td data-compass="southwest"></td>
+              <td data-compass="south"></td>
+              <td data-compass="southeast"></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <div id="handlebars_templates">
+      <script id="player_image_template" type="text/x-handlebars-template">
+        <img class="{{playerName}}" src="{{playerImage}}" class="won"></img>
+      </script>
+
+      <script id="inner_game_won" type="text/x-handlebars-template">
+        <img src="{{playerImage}}" class="won"></img>
+      </script>
+    </div>
+
+    <a class="github-fork-ribbon" href="https://github.com/nunogoncalves/TicTacToe-Ultimate" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+
+    <script src="js/plugins/jquery-2.1.3.min.js"></script>
+    <script src="js/plugins/handlebars-v2.0.0.js"></script>
+    <script src="js/plugins/alertify.js"></script>
+    <script src="js/rules.js"></script>
+    <script src="js/tic_tac_toe.js"></script>
+    <script>
+      $(function() {
+        $.ticTacToe.load();
+      });
+    </script>
+  </body>
+</html>
