@@ -7,6 +7,24 @@
     <link rel="stylesheet" type="text/css" href="css/plugins/alertify.core.css">
     <link rel="stylesheet" type="text/css" href="css/plugins/alertify.default.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <style type="text/css">
+      #game_container {
+        /*width: 100px;
+        height: 100px;
+        position: relative;*/
+      }
+      #outter_game,
+      #overlay   {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+      #overlay {
+        z-index: -10;
+      }
+    </style>
   </head>
   <body>
     <div id='info_container'>
@@ -19,193 +37,196 @@
         </div>
       </div>
     </div>
-    <table class="outter_game">
-      <tr>
-        <td class="northwest_td">
-          <table class="inner_game northwest" data-compass="northwest">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="north_td">
-          <table class="inner_game north" data-compass="north">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="northest_td">
-          <table class="inner_game northeast"  data-compass="northest"
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td class="west_td">
-          <table class="inner_game inner_game west" data-compass="west">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="center_td">
-          <table class="inner_game inner_game center" data-compass="center">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="east_td">
-          <table class="inner_game inner_game east" data-compass="east">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-      <tr>
-        <td class="southwest_td">
-          <table class="inner_game southwest" data-compass="southwest">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="south_td">
-          <table class="inner_game south" data-compass="south">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-        <td class="southest_td">
-          <table class="inner_game southeast" data-compass="southest">
-            <tr>
-              <td data-compass="northwest"></td>
-              <td data-compass="north"></td>
-              <td data-compass="northeast"></td>
-            </tr>
-            <tr>
-              <td data-compass="west"></td>
-              <td data-compass="center"></td>
-              <td data-compass="east"></td>
-            </tr>
-            <tr>
-              <td data-compass="southwest"></td>
-              <td data-compass="south"></td>
-              <td data-compass="southeast"></td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-
+    <div id="game_container">
+      <div id="overlay"></div>
+      <table class="outter_game">
+        <tr>
+          <td class="northwest_td">
+            <table class="inner_game northwest" data-compass="northwest">
+              <tr>
+                <td id="northwest_northwest" data-compass="northwest"></td>
+                <td id="northwest_north" data-compass="north"></td>
+                <td id="northwest_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="northwest_west" data-compass="west"></td>
+                <td id="northwest_center" data-compass="center"></td>
+                <td id="northwest_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="northwest_southwest" data-compass="southwest"></td>
+                <td id="northwest_south" data-compass="south"></td>
+                <td id="northwest_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="north_td">
+            <table class="inner_game north" data-compass="north">
+              <tr>
+                <td id="north_northwest" data-compass="northwest"></td>
+                <td id="north_north" data-compass="north"></td>
+                <td id="north_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="north_west" data-compass="west"></td>
+                <td id="north_center" data-compass="center"></td>
+                <td id="north_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="north_southwest" data-compass="southwest"></td>
+                <td id="north_south" data-compass="south"></td>
+                <td id="north_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="northest_td">
+            <table class="inner_game northeast"  data-compass="northest">
+              <tr>
+                <td id="northeast_northwest" data-compass="northwest"></td>
+                <td id="northeast_north" data-compass="north"></td>
+                <td id="northeast_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="northeast_west" data-compass="west"></td>
+                <td id="northeast_center" data-compass="center"></td>
+                <td id="northeast_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="northeast_southwest" data-compass="southwest"></td>
+                <td id="northeast_south" data-compass="south"></td>
+                <td id="northeast_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="west_td">
+            <table class="inner_game inner_game west" data-compass="west">
+              <tr>
+                <td id="west_northwest" data-compass="northwest"></td>
+                <td id="west_north" data-compass="north"></td>
+                <td id="west_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="west_west" data-compass="west"></td>
+                <td id="west_center" data-compass="center"></td>
+                <td id="west_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="west_southwest" data-compass="southwest"></td>
+                <td id="west_south" data-compass="south"></td>
+                <td id="west_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="center_td">
+            <table class="inner_game inner_game center" data-compass="center">
+              <tr>
+                <td id="center_northwest" data-compass="northwest"></td>
+                <td id="center_north" data-compass="north"></td>
+                <td id="center_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="center_west" data-compass="west"></td>
+                <td id="center_center" data-compass="center"></td>
+                <td id="center_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="center_southwest" data-compass="southwest"></td>
+                <td id="center_south" data-compass="south"></td>
+                <td id="center_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="east_td">
+            <table class="inner_game inner_game east" data-compass="east">
+              <tr>
+                <td id="east_northwest" data-compass="northwest"></td>
+                <td id="east_north" data-compass="north"></td>
+                <td id="center_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="center_west" data-compass="west"></td>
+                <td id="east_center" data-compass="center"></td>
+                <td id="east_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="east_southwest" data-compass="southwest"></td>
+                <td id="east_south" data-compass="south"></td>
+                <td id="east_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td class="southwest_td">
+            <table class="inner_game southwest" data-compass="southwest">
+              <tr>
+                <td id="southwest_northwest" data-compass="northwest"></td>
+                <td id="southwest_north" data-compass="north"></td>
+                <td id="southwest_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="southwest_west" data-compass="west"></td>
+                <td id="southwest_center" data-compass="center"></td>
+                <td id="southwest_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="southwest_southwest" data-compass="southwest"></td>
+                <td id="southwest_south" data-compass="south"></td>
+                <td id="southwest_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="south_td">
+            <table class="inner_game south" data-compass="south">
+              <tr>
+                <td id="south_northwest" data-compass="northwest"></td>
+                <td id="south_north" data-compass="north"></td>
+                <td id="south_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="south_west" data-compass="west"></td>
+                <td id="south_center" data-compass="center"></td>
+                <td id="south_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="south_southwest" data-compass="southwest"></td>
+                <td id="south_south" data-compass="south"></td>
+                <td id="south_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+          <td class="southest_td">
+            <table class="inner_game southeast" data-compass="southest">
+              <tr>
+                <td id="southeast_northwest" data-compass="northwest"></td>
+                <td id="southeast_north" data-compass="north"></td>
+                <td id="southeast_northeast" data-compass="northeast"></td>
+              </tr>
+              <tr>
+                <td id="southeast_west" data-compass="west"></td>
+                <td id="southeast_center" data-compass="center"></td>
+                <td id="southeast_east" data-compass="east"></td>
+              </tr>
+              <tr>
+                <td id="southeast_southwest" data-compass="southwest"></td>
+                <td id="southeast_south" data-compass="south"></td>
+                <td id="southeast_southeast" data-compass="southeast"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+      
     <div id="handlebars_templates">
       <script id="player_image_template" type="text/x-handlebars-template">
         <img class="{{playerName}}" src="{{playerImage}}" class="won"></img>
       </script>
 
       <script id="inner_game_won" type="text/x-handlebars-template">
-        <img src="{{playerImage}}" class="won"></img>
+        <img src="{{playerImage}}" class="won {{playerName}}"></img>
       </script>
     </div>
 

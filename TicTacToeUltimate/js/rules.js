@@ -67,4 +67,18 @@ $.rules = {
   nextSubGameToPlay: function($cell) {
     return $('.inner_game.' + $cell.data('compass'))
   },
+
+  winner: function() {
+    let finishedTables = $(".inner_game.wonTable")
+    if (finishedTables.length < 3) {
+      return
+    }
+
+
+    //$(".playedAlready").
+    // $(".inner_game.wonTable")
+    //$(".inner_game.wonTable")[0].className.split(" ").includes("center")
+  }
 }
+
+
