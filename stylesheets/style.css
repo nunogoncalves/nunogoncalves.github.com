@@ -46,3 +46,9 @@ body {
 .name_and_title {
   text-align: center;
 }
+
+.caption {
+  font-size: 10px;
+  font-family: 'Titillium Web', sans-serif;
+  text-shadow: 0 0;
+}
