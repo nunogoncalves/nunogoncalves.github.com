@@ -9,12 +9,14 @@ body {
 
   font-size: 20px;
   font-family: 'Titillium Web', sans-serif;
-  /*color: #887E7E;*/
   color: #DCDCDC;
   text-shadow: 0 0 8px #D4D4D4;
 
-  background-image: url('../images/laptop.jpg');
-  background-repeat: no-repeat;
+  /* https://css-tricks.com/examples/FullPageBackgroundImage/css-1.php */
+  background: url('../images/laptop.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
 }
 
