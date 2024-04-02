@@ -1,74 +1,225 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>Nuno Gonçalves</title>
-  </head>
-
-  <body>
-    <div id="content"></div>
-
-    <script id="profile_template" type="text/x-handlebars-template">
-      <div class="centered body">
-        <div>
-          <div style="display: inline-block;float: left;">
-            <img class="avatar" src="{{avatar_url}}">
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+</head>
+<body>
+    <div class="wrapper">
+          <div class="sidebar">
+              <div class="profile">
+                  <img src="https://avatars3.githubusercontent.com/u/3007012" alt="Profile Image" class="profile-image">
+                  <h3>Nuno Gonçalves</h3>
+                  <p>iOS Developer</p>
+                  <p>Lisbon - Portugal</p>
+                  <span><i class="fa-solid fa-language"></i>🇵🇹 🇬🇧 🇫🇷</span>
+              </div>
+              <div id="social_links" style="text-align: center; margin-bottom: 20px;">
+                <span>
+                  <a href="mailto:goncalves.cm.nuno@gmail.com" target="_blank"><img class="source_icon" src="images/SocialSources/email2.png"></a>
+                </span>
+                  <span>
+                    <a href="https://github.com/nunogoncalves" target="_blank"><img class="source_icon" src="images/SocialSources/github1.png"></a>
+                  </span>
+                  <span>
+                    <a href="https://medium.com/@nunogonalves" target="_blank"><img class="source_icon" src="images/SocialSources/medium.png"></a>
+                  </span>
+                  <span>
+                    <a href="https://pt.linkedin.com/in/goncalvescmnuno" target="_blank"><img class="source_icon" src="images/SocialSources/linkedin.png"></a>
+                  </span>
+                  <span>
+                    <a href="https://twitter.com/goncalvescmnuno" target="_blank"><img class="source_icon" src="images/SocialSources/twitterx.png"></a>
+                  </span>
+                  <span>
+                    <a href="http://stackoverflow.com/users/919445/nuno-gon%C3%A7alves" target="_blank"><img class="source_icon" src="images/SocialSources/stackoverflow.png"></a>
+                  </span>
+                  <span style="display: none">
+                    <a href="https://itunes.apple.com/developer/nuno-goncalves/id990207056" target="_blank"><img class="source_icon" src="images/SocialSources/appstore.png"></a>
+                  </span>
+                  <span>
+                    <a href="https://github.com/nunogoncalves/resume/blob/master/Resume/Resume.pdf" target="_blank"><img class="source_icon" src="images/SocialSources/resume2.png"></a>
+                  </span>
+              </div>
+              <ul>
+                  <li>
+                      <a href="#education">
+                          <span class="icon"><i class="fa-solid fa-graduation-cap"></i></span>
+                          <span class="item">Education</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#jobs">
+                          <span class="icon"><i class="fas fa-user-friends"></i></span>
+                          <span class="item">Jobs</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#open-source">
+                          <span class="icon"><i class="fa-brands fa-github"></i></span>
+                          <span class="item">Open Source</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#tools">
+                          <span class="icon"><i class="fa-sharp fa-regular fa-wrench"></i></i></span>
+                          <span class="item">Tools</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#skills">
+                          <span class="icon"><i class="fa-solid fa-hat-wizard"></i></span>
+                          <span class="item">Skills</span>
+                      </a>
+                  </li>
+              </ul>
           </div>
-          <div class="name_and_title">
-            <div class="profile_info">{{name}}</div>
-            <div class="profile_info">{{title}}</div>
-            <div class="profile_info">{{location}}</div>
-          </div>
+          <div id="content_container">
+            <div id="intro" class="section">
+            Hi! I'm Nuno and I'm a sowftware developer. My background is electronics and telecomunications but I imediatelly noticed I loved programming. Currently and for the past 11 years I've been working as an iOS developer. My professional carrer started with web development. First with GWT, then Ruby on Rails before jumping to iOS. 
+    I love programming and solving challanges. One of the best feelings is that relief after spending a long time trying to figure something out and finally being able to solve it. 
+             </div>
+            <div id="education" class="section profile">
+                <h1>Education</h1>
+                <img src="https://www.ua.pt/imgs/logo_mobile.svg">
+                <h3>Electronics and Telecomunications</h3>
+                <p><a href="https://www.ua.pt">University of Aveiro</a>, Aveiro, Portugal</p>
+            </div>
+            <div id="jobs" class="section">
+                <h1>Jobs</h1>
+                <ul> 
+                  <li>
+                    LatitudeN Jan 2011 - Jul 2011
+                    <ul>
+                      <li>https://web.archive.org/web/20180407134558/http://www.latituden.com/home_en.html</li>
+                      <li>Internship</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Linkedcare Jan 2012 - March 2016
+                    <ul>
+                      <li>https://linkedcare.com</li>
+                      <li>Started with web, and jumped to iOS</li>
+                      <li>video aqui</li>
+                      <iframe width="420" height="236" src="https://www.youtube.com/watch?v=NW-tzeW1ENU"></iframe>
+                     </video>
+                    </ul>
+                  </li>
+                  <li>
+                    Globestamp March 2016 - April 2017
+                    <ul>
+                      <li>https://web.archive.org/web/20160911042846/http://globestamp.com/</li>
+                      <li>Tourism app, inspired a developer</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Waterdog August 2016 - October 2016
+                    <ul>
+                      <li>https://waterdog.mobi</li>
+                      <li>Outsourcing experience helping the Eco app</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Farfetch - April 2017 - Present
+                    <ul>
+                      <li>www.farfetch.com</li>
+                      <li>Worked as a senior iOS developer inspiring folks</li>
+                    </ul>
+                  </li>
+
+                </ul>
+            </div>
+            <div id="open-source" class="section">
+                <h1>Open Source projects/apps/games</h1>
+                <ul> 
+                  <li>Octopodium</li>
+                  <img src="https://user-images.githubusercontent.com/3007012/33797019-259ce242-dcf8-11e7-9509-705f3e070f80.gif">
+                  <li>https://medium.com/android-news/my-first-app-store-app-story-6c29e01e0306</li>
+                  <li>Multiselection TableView https://github.com/nunogoncalves/iOS-MultiSelectionTable</li>
+                  <li>
+                    <img src="https://github.com/nunogoncalves/iOS-MultiSelectionTable/raw/master/Resources/MultiSelectionTableView1.gif">
+                    <img src="https://github.com/nunogoncalves/iOS-MultiSelectionTable/raw/master/Resources/MultiselectionSupermanAnimation.gif">
+                  </li>
+                  <li><a href="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">TicTacToe Ultimate</a></li>
+                  <li><a href="https://nunogoncalves.github.io/StockStalk/">StockStalk</a></li>
+                  <li>Daily selfie</li>
+                  <iframe width="420" height="236" src="https://www.youtube.com/embed/2Bj0g1TLEzo"></iframe>
+                  <li>Metro Lx</li>
+                  <li>Credit Card form</li>
+                  <li>iOS/Android</li>
+                  <li>Canal hollywood</li>
+                  <li>Android / Web</li>
+                  <li>CGD</li>
+                </ul>
+            </div>
+            <div id="tools" class="section">
+                <h1>Tools</h1>
+                <ul> 
+                  <li>Shake to login</li>
+                  <li>Sentinel</li>
+                  <li>Snitch</li>
+                  <li>Snapshot testing (html)</li>
+                  <li>Ui testing </li>
+                  <li>Git culture inspiration (better commit messages, and more conscience of them))</li>
+                  <li>Raven (deep links and login)</li>
+                  <li>Deeplinks</li>
+                  <li>Merchants web app</li>
+                  <li>Autojira</li>
+                  <li>Hot reloading</li>
+                  <li>Slack pro tips</li>
+                </ul>
+            </div>
+            <div id="bbb" class="section">
+                <h1>General Skills</h1>
+                <ul> 
+                  <li>
+                    Programming Languages
+                    <ul>
+                      <li>Swift</li>
+                      <li>Ruby</li>
+                      <li>Java</li>
+                      <li>Javascript</li>
+                      <li>SQL</li>
+                      <li>XML</li>
+                      <li>HTML</li>
+                      <li>CSS</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Environments
+                    <ul>
+                      <li>iOS</li>
+                      <li>macOS</li>
+                      <li>Android</li>
+                      <li>Web</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Version Control
+                    <ul>
+                      <li>Github</li>
+                      <li>Gitlab</li>
+                      <li>Bitbucket</li>
+                      <li>SVN</li>
+                      <li>CVS</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Databases
+                    <ul>
+                      <li>SQLite</li>
+                      <li>PostgreSql</li>
+                    </ul>
+                  </li>
+                </ul>
+            </div>
+            <div>
+              https://foolishdeveloper.com/sidebar-menu-using-html-css-javascript/
+            </div>
         </div>
-        </br>
-        <div style="float: left">
-          <span>
-            <a href="mailto:{{email}}" target="_blank"><img class="source_icon" src="{{email_url}}"></a>
-          </span>
-          {{#each social_sources}}
-            <span>
-              <a href="{{link}}" target="_blank"><img class="source_icon" src="{{image_url}}"></a>
-            </span>
-          {{/each}}
-        </div>
-        <div>
-          <iframe width="420" height="236"  src="https://www.youtube.com/embed/2Bj0g1TLEzo"></iframe>
-          <div class="caption">Life project using custom made tools (iOS and macOS).</div>
-        </div>
-
-        <div>
-          Play some tic tac toe ultimate! <a target="blank" href="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">here!</a>
-        </div>
-      </div>
-    </script>
-
-    <script src="javascripts/main.js"></script>
-    <script src="javascripts/vendor/handlebars-v4.0.5.js"></script>
-    <script>
-      (function() {
-        loadGoogleAnalytics();
-        loadPageTracker();
-
-        var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "params.json", false);
-        xhttp.send();
-
-        var profileJSON = JSON.parse(xhttp.responseText)
-        console.log(profileJSON);
-
-        var source = document.getElementById("profile_template").innerHTML;
-        var template = Handlebars.compile(source);
-        document.getElementById("content").innerHTML = template(profileJSON);
-      })();
-    </script>
-
-  </body>
+    </div>
+</body>
 </html>
