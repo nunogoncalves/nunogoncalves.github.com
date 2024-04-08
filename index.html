@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
+    <base target="_blank">
 </head>
-<body>
     <div class="wrapper">
           <div class="sidebar">
               <div class="profile">
@@ -79,57 +79,108 @@
           </div>
           <div id="content_container">
             <div id="intro" class="section">
-            Hi! I'm Nuno and I'm a sowftware developer. My background is electronics and telecomunications but I imediatelly noticed I loved programming. Currently and for the past 11 years I've been working as an iOS developer. My professional carrer started with web development. First with GWT, then Ruby on Rails before jumping to iOS. 
+            I'm a sowftware developer. My background is electronics and telecomunications but I imediatelly noticed I loved programming. Currently and for the past 11 years I've been working as an iOS developer. My professional carrer started with web development. First with GWT, then Ruby on Rails before jumping to iOS. 
     I love programming and solving challanges. One of the best feelings is that relief after spending a long time trying to figure something out and finally being able to solve it. 
              </div>
             <div id="education" class="section profile">
                 <h1>Education</h1>
-                <img src="https://www.ua.pt/imgs/logo_mobile.svg">
-                <h3>Electronics and Telecomunications</h3>
+                <img src="https://www.ua.pt/imgs/logo_mobile.svg" style="height: 50px; float: left;">
+                <h3><a href="https://www.ua.pt/en/curso/502">Electronics and Telecomunications</a></h3>
                 <p><a href="https://www.ua.pt">University of Aveiro</a>, Aveiro, Portugal</p>
             </div>
-            <div id="jobs" class="section">
+            <div id="jobs" class="section" style="float: clear">
                 <h1>Jobs</h1>
-                <ul> 
-                  <li>
-                    LatitudeN Jan 2011 - Jul 2011
+                <div id="content_container">
+                  <div style="width: 100%; overflow: hidden; font-size: 25px;">
+
+                    <div class="job-item-container" style="margin-left: 0px">
+                      <div>
+                        <img src="https://web.archive.org/web/20180407134558im_/http://www.latituden.com/images/logo_small.gif" style="background: white; margin-left: auto; margin-right: auto; display: block;">
+                        <span style="text-align: center; vertical-align: middle;">
+                        <p><a href="https://web.archive.org/web/20180407134558/http://www.latituden.com/home_en.html">LatitudeN</a></p>
+                        <p style="text-align: center;">Jan 2011 - Jul 2011</p>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="job-item-container">
+                      <div>
+                        <img src="images/jobs/linkedcare.png" style="height: 66px; border-radius: 14px; margin: 20px 0 20px 0">
+                        <span style="text-align: center; vertical-align: middle;">
+                          <p><a href="https://linkedcare.com">Linkedcare</a></p>
+                          <p style="text-align: center;">Jan 2012 - Mar 2016</p>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="job-item-container">
+                      <div>
+                        <img src="images/jobs/globestamp.png" style="margin-top: 15px">
+                        <span style="text-align: center; vertical-align: middle; margin-top: 23px">
+                        <p><a href="https://web.archive.org/web/20180407134558/http://www.latituden.com/home_en.html">Globstamp</a></p>
+                        <p style="text-align: center;">Mar 2016 - Apr 2017</p>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="job-item-container">
+                      <div>
+                        <img src="images/jobs/waterdog.jpeg">
+                        <span style="text-align: center; vertical-align: middle;">
+                        <p><a href="https://waterdog.mobi">Waterdog</a></p>
+                        <p style="text-align: center;">Aug 2016 - Oct 2016</p>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="job-item-container">
+                      <div>
+                        <img src="images/jobs/farfetch.png" style="height: 66px">
+                        <span style="text-align: center; vertical-align: middle;">
+                        <p><a href="https://farfetch.com">Farfetch</a></p>
+                        <p style="text-align: center;">Apr 2017 - Jun 2024</p>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ul id="jobs-list"> 
+                  <li class="job-item">
+                     <img src="https://web.archive.org/web/20180407134558im_/http://www.latituden.com/images/logo_small.gif" style="height: 25px; background: white;">
+                  <a href="https://web.archive.org/web/20180407134558/http://www.latituden.com/home_en.html">LatitudeN</a> Jan 2011 - Jul 2011
                     <ul>
-                      <li>https://web.archive.org/web/20180407134558/http://www.latituden.com/home_en.html</li>
                       <li>Internship</li>
                     </ul>
                   </li>
-                  <li>
-                    Linkedcare Jan 2012 - March 2016
+                  <li class="job-item">
+                     <img src="https://linkedcare.com/assets/img/blueDocPatientIcon.svg" style="height: 25px">
+                     <a href="https://linkedcare.com">Linkedcare</a> Jan 2012 - March 2016
                     <ul>
-                      <li>https://linkedcare.com</li>
                       <li>Started with web, and jumped to iOS</li>
-                      <li>video aqui</li>
-                      <iframe width="420" height="236" src="https://www.youtube.com/watch?v=NW-tzeW1ENU"></iframe>
+                      <iframe width="395" height="700" src="https://www.youtube.com/embed/NW-tzeW1ENU"></iframe>
                      </video>
                     </ul>
                   </li>
-                  <li>
-                    Globestamp March 2016 - April 2017
+                  <li class="job-item">
+                     <img src="https://web.archive.org/web/20160911042846im_/http://globestamp.com/wp-content/uploads/2015/12/globestamp-site.png" style="height: 25px">
+                    <a href="https://web.archive.org/web/20160911042846/http://globestamp.com">Globestamp</a> 
+                    March 2016 - April 2017
                     <ul>
-                      <li>https://web.archive.org/web/20160911042846/http://globestamp.com/</li>
                       <li>Tourism app, inspired a developer</li>
                     </ul>
                   </li>
-                  <li>
-                    Waterdog August 2016 - October 2016
+                  <li class="job-item">
+                    <a href="https://waterdog.mobi">Waterdog</a> Aug 2016 - Oct 2016
                     <ul>
-                      <li>https://waterdog.mobi</li>
-                      <li>Outsourcing experience helping the Eco app</li>
+                      <li>Outsourcing experience helping the <a href="https://eco.pt">Eco</a> app available in the <a href="https://itunes.apple.com/app/id1031240627">app store</a></li>
                     </ul>
                   </li>
-                  <li>
-                    Farfetch - April 2017 - Present
+                  <li class="job-item">
+                     <a href="https://farfetch.com">Farfetch</a> - April 2017 - Present
                     <ul>
-                      <li>www.farfetch.com</li>
                       <li>Worked as a senior iOS developer inspiring folks</li>
                     </ul>
                   </li>
-
                 </ul>
             </div>
             <div id="open-source" class="section">
@@ -143,10 +194,14 @@
                     <img src="https://github.com/nunogoncalves/iOS-MultiSelectionTable/raw/master/Resources/MultiSelectionTableView1.gif">
                     <img src="https://github.com/nunogoncalves/iOS-MultiSelectionTable/raw/master/Resources/MultiselectionSupermanAnimation.gif">
                   </li>
-                  <li><a href="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">TicTacToe Ultimate</a></li>
-                  <li><a href="https://nunogoncalves.github.io/StockStalk/">StockStalk</a></li>
-                  <li>Daily selfie</li>
-                  <iframe width="420" height="236" src="https://www.youtube.com/embed/2Bj0g1TLEzo"></iframe>
+                  <li>
+                     <div>
+                        <a href="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">TicTacToe Ultimate</a>
+                     </div>
+                     <div>
+                        <iframe width=1100 height=700 style="background: white;" src="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html"></iframe>
+                     </div>
+                  </li>
                   <li>Metro Lx</li>
                   <li>Credit Card form</li>
                   <li>iOS/Android</li>
@@ -158,6 +213,9 @@
             <div id="tools" class="section">
                 <h1>Tools</h1>
                 <ul> 
+                  <li><a href="https://nunogoncalves.github.io/StockStalk/">StockStalk</a></li>
+                  <li>Daily selfie</li>
+                  <iframe width="420" height="236" src="https://www.youtube.com/embed/2Bj0g1TLEzo"></iframe>
                   <li>Shake to login</li>
                   <li>Sentinel</li>
                   <li>Snitch</li>
@@ -212,6 +270,15 @@
                     <ul>
                       <li>SQLite</li>
                       <li>PostgreSql</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Others
+                    <ul>
+                      <li>Jira</li>
+                      <li>Confluence</li>
+                      <li>RedMine</li>
+                      <li>PivotalTracker</li>
                     </ul>
                   </li>
                 </ul>

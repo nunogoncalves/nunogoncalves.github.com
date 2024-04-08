@@ -84,7 +84,7 @@ body{
 
 .wrapper .section{
   width: calc(100% - 225px);
-  margin-left: 225px;
+  padding-left: 250px;
   transition: all 0.5s ease;
 }
 
@@ -119,6 +119,37 @@ body.active .wrapper .section{
   width: 100%;
 }
 
+.section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#jobs #jobs-list {
+  margin-top: 20px;
+}
+
+.job-item-container {
+  margin-left: 10px; 
+  float: left; 
+  width: 250px; 
+  height: 250px; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  border-radius: 12px;
+  background-color: rgb(93, 93, 93, 0.4);
+}
+
+.job-item-container img {
+  margin-left: auto; 
+  margin-right: auto; 
+  display: block;
+}
+
+.job-item {
+  margin-top: 20px;
+}
+
 #content_container {
   background: url('../images/laptop.jpg') no-repeat center center fixed; 
   -webkit-background-size: cover;
@@ -128,4 +159,10 @@ body.active .wrapper .section{
 
   color: #DCDCDC;
   text-shadow: 0 0 0px #D4D4D4;
+}
+
+#content_container a {
+  color: white;
+  text-decoration: underline;
+  target: blank;
 }
