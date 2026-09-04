@@ -1,0 +1,293 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #050505;
+  color: #fff;
+  padding: 3vw;
+}
+
+main {
+  width: min(100%, 60rem);
+  margin: 0 auto;
+}
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0;
+  color: #58ff8a;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: .95;
+}
+
+h2 {
+  margin-top: 3rem;
+}
+
+.search-label {
+  display: block;
+  margin-bottom: .4rem;
+  font-weight: 700;
+}
+
+#organization-search {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: .75rem 1rem;
+  border: 2px solid #444;
+  border-radius: .5rem;
+  background: #111;
+  color: #fff;
+  font: inherit;
+  font-size: 1rem;
+}
+
+#organization-search:focus {
+  outline: 2px solid #58ff8a;
+  outline-offset: 2px;
+}
+
+#status {
+  color: #aaa;
+}
+
+#organizations-list {
+  padding: 1rem 1.5rem;
+  border: 2px solid #333;
+  border-radius: .8rem;
+  background: #111;
+}
+
+#organizations-list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+#organizations-list li {
+  border-bottom: 1px solid #444;
+}
+
+#organizations-list li:last-child {
+  border-bottom: 0;
+}
+
+#organizations-list li[hidden] {
+  display: none;
+}
+
+#organization-search-empty {
+  color: #aaa;
+}
+
+.organization-button {
+  width: 100%;
+  padding: .65rem 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.organization-button:hover,
+.organization-button:focus {
+  color: #58ff8a;
+}
+
+.organization-locations {
+  margin: 0 0 .75rem 1rem;
+  padding: .75rem 1rem;
+  border-left: 2px solid #58ff8a;
+  background: #0b0b0b;
+}
+
+.organization-locations[hidden] {
+  display: none;
+}
+
+.organization-locations h3 {
+  margin: 0 0 .75rem;
+  color: #58ff8a;
+  font-size: 1rem;
+}
+
+.locations-list {
+  padding: .75rem 1rem;
+  border: 2px solid #333;
+  border-radius: .8rem;
+  background: #111;
+}
+
+.locations-list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.locations-list li {
+  padding: .65rem 0;
+  border-bottom: 1px solid #444;
+}
+
+.locations-list li:last-child {
+  border-bottom: 0;
+}
+
+.location-button {
+  width: 100%;
+  padding: .65rem 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.location-button:hover,
+.location-button:focus {
+  color: #58ff8a;
+}
+
+.location-divisions {
+  margin: 0 0 .75rem 1rem;
+  padding: .75rem 1rem;
+  border-left: 2px solid #58ff8a;
+  background: #0b0b0b;
+}
+
+.location-divisions[hidden] {
+  display: none;
+}
+
+.location-divisions h4 {
+  margin: 0 0 .75rem;
+  color: #58ff8a;
+  font-size: .95rem;
+}
+
+.divisions-list {
+  padding: .75rem 1rem;
+  border: 2px solid #333;
+  border-radius: .8rem;
+  background: #111;
+}
+
+.divisions-list ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.divisions-list li {
+  padding: .65rem 0;
+  border-bottom: 1px solid #444;
+}
+
+.divisions-list li:last-child {
+  border-bottom: 0;
+}
+
+.division-button {
+  width: 100%;
+  padding: .65rem 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.division-button:hover,
+.division-button:focus {
+  color: #58ff8a;
+}
+
+.division-opening-hour {
+  display: block;
+  margin-top: .25rem;
+  color: #aaa;
+  font-size: .85em;
+  font-weight: 400;
+}
+
+footer {
+  margin-top: 1.5rem;
+  color: #aaa;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+
+footer p {
+  margin: .25rem 0;
+}
+
+footer a {
+  color: #58ff8a;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 11vw, 3rem);
+  }
+
+  h2 {
+    margin-top: 2rem;
+    font-size: 1.35rem;
+  }
+
+  #status {
+    width: 100%;
+  }
+
+  #organizations-list {
+    padding: .6rem;
+    border-radius: .65rem;
+  }
+
+  #organizations-list ul,
+  .locations-list ul,
+  .divisions-list ul {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .organization-button,
+  .location-button,
+  .division-button {
+    padding: .8rem .25rem;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .organization-locations,
+  .location-divisions {
+    margin-left: 0;
+    padding: .65rem;
+  }
+
+  .locations-list,
+  .divisions-list {
+    padding: .5rem;
+    border-radius: .6rem;
+  }
+}

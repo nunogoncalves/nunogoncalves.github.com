@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Balcão do IRN - Registo na Loja de Cidadão de Lisboa - Laranjeiras</title>
+  <link rel="stylesheet" href="LojaCidadaoWaitingTickets.css">
+</head>
+<body>
+  <header>
+    <a id="back-link" class="back-link" href="MapaCidadaoOrganizations.html">← Voltar</a>
+    <h2 id="page-title">Balcão do IRN - Registo na Loja de Cidadão de Lisboa - Laranjeiras</h2>
+    <div id="status">Loading…</div>
+  </header>
+
+  <p id="opening-hour" class="opening-hour" hidden></p>
+
+  <div id="result">Waiting for the first response…</div>
+
+  <footer id="info">
+    <div>Fonte dos dados: <a href="https://mapa.digital.gov.pt" target="_blank" rel="noopener noreferrer">Mapa de Cidadão</a></div>
+    <div>Nota: esta página poderá não funcionar corretamente no Safari.</div>
+  </footer>
+
+  <div id="ticket-modal" class="modal" hidden>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="ticket-modal-title">
+      <button type="button" class="modal-close" id="close-ticket-modal" aria-label="Fechar">×</button>
+      <h2 id="ticket-modal-title">Obter senha</h2>
+      <p id="ticket-service-name"></p>
+
+      <form id="ticket-form">
+        <label for="ticket-phone">Número de telefone</label>
+        <input id="ticket-phone" name="phoneNumber" type="tel" inputmode="numeric" autocomplete="tel" minlength="9" maxlength="9" pattern="[0-9]{9}" required>
+        <p class="modal-help">Introduza um número de telefone com 9 dígitos.</p>
+        <div id="ticket-modal-message" class="modal-message" aria-live="polite"></div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancel-ticket">Cancelar</button>
+          <button type="submit" id="submit-ticket">Obter senha</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const proxyBase = "https://lojasdocidadao.up.railway.app";
+    const endpointBase = `${proxyBase}/api/map/pointOfCare/division/siga`;
+    const pageParameters = new URLSearchParams(window.location.search);
+    const sigaInstituteIdentifier = Number(pageParameters.get("sigaInstituteIdentifier") ?? 2);
+    const sigaEntityIdentifier = Number(pageParameters.get("sigaEntityIdentifier") ?? 176);
+    const sigaLocalIdentifier = Number(pageParameters.get("sigaLocalIdentifier") ?? 36);
+    const endpoint = [sigaInstituteIdentifier, sigaEntityIdentifier, sigaLocalIdentifier]
+      .every(identifier => Number.isInteger(identifier) && identifier > 0)
+      ? `${endpointBase}/${sigaInstituteIdentifier}/${sigaEntityIdentifier}/${sigaLocalIdentifier}`
+      : "";
+    const requestedPageTitle = pageParameters.get("title");
+    const backLink = document.querySelector("#back-link");
+    const tokenEndpoint = `${proxyBase}/api/map/token`;
+    const ticketEndpoint = `${proxyBase}/api/map/pointOfCare/division/sigaNextTicket`;
+    let bearerToken = "";
+    const pollEveryMs = 30_000;
+
+    const resultElement = document.querySelector("#result");
+    const statusElement = document.querySelector("#status");
+    const pageTitleElement = document.querySelector("#page-title");
+    const openingHourElement = document.querySelector("#opening-hour");
+    const ticketModal = document.querySelector("#ticket-modal");
+    const ticketForm = document.querySelector("#ticket-form");
+    const ticketPhoneInput = document.querySelector("#ticket-phone");
+    const ticketServiceName = document.querySelector("#ticket-service-name");
+    const ticketModalMessage = document.querySelector("#ticket-modal-message");
+    const closeTicketModalButton = document.querySelector("#close-ticket-modal");
+    const cancelTicketButton = document.querySelector("#cancel-ticket");
+    const submitTicketButton = document.querySelector("#submit-ticket");
+    let requestInProgress = false;
+    let requestsStopped = false;
+    let pollTimer;
+    let currentItems = [];
+    let selectedService = null;
+
+    if (requestedPageTitle) {
+      pageTitleElement.textContent = requestedPageTitle;
+      document.title = `${requestedPageTitle} - Senhas`;
+    }
+
+    const requestedOpeningHour = pageParameters.get("openingHour");
+    if (requestedOpeningHour) {
+      openingHourElement.textContent = `Horário: ${requestedOpeningHour}`;
+      openingHourElement.hidden = false;
+    }
+
+    if (backLink && pageParameters.get("from") === "organizations") {
+      backLink.addEventListener("click", event => {
+        if (window.history.length > 1) {
+          event.preventDefault();
+          window.history.back();
+        }
+      });
+    }
+
+    function stopPolling() {
+      requestsStopped = true;
+      clearInterval(pollTimer);
+      pollTimer = undefined;
+    }
+
+    function pausePolling() {
+      clearInterval(pollTimer);
+      pollTimer = undefined;
+    }
+
+    function startPolling() {
+      if (!endpoint || requestsStopped || document.hidden || pollTimer) return;
+
+      pollTimer = setInterval(fetchResult, pollEveryMs);
+    }
+
+    async function refreshToken() {
+      try {
+        const response = await fetch(tokenEndpoint, {
+          method: "GET",
+          cache: "no-store"
+        });
+        const responseText = await response.text();
+
+        if (!response.ok) {
+          throw new Error(`Token refresh failed: HTTP ${response.status}`);
+        }
+
+        let newToken = responseText.trim();
+
+        try {
+          const tokenData = JSON.parse(responseText);
+          if (typeof tokenData === "string") {
+            newToken = tokenData;
+          } else if (tokenData && typeof tokenData === "object") {
+            newToken = tokenData.token
+              ?? tokenData.data?.token
+              ?? tokenData.access_token
+              ?? tokenData.accessToken
+              ?? "";
+          } else {
+            newToken = "";
+          }
+        } catch {
+          // The token endpoint returned the token as plain text.
+        }
+
+        if (!newToken) {
+          throw new Error("Token refresh returned an empty token");
+        }
+
+        bearerToken = newToken.replace(/^Bearer\s+/i, "");
+      } catch (error) {
+        stopPolling();
+        throw error;
+      }
+    }
+
+    async function fetchWithToken(url, options = {}) {
+      const request = () => fetch(url, {
+        ...options,
+        headers: {
+          ...(options.headers ?? {}),
+          Authorization: `Bearer ${bearerToken}`
+        },
+        cache: "no-store"
+      });
+
+      let response = await request();
+
+      if (response.status === 401) {
+        await refreshToken();
+
+        response = await request();
+
+        if (response.status === 401) {
+          throw new Error("HTTP 401 after token refresh");
+        }
+      }
+
+      return response;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function formatTime(value) {
+      return typeof value === "string" ? value.replace(/^0h\s*/i, "") : value;
+    }
+
+    function renderTable(items) {
+      if (!items.length) return "<p>No data available.</p>";
+
+      const columns = [
+        "serviceName",
+        "lastTicketNumberAttended",
+        "waitingTimeLastTicket",
+        "averageServiceTime",
+        "waitingUsers",
+        "waitingStatus",
+        "getTicket"
+      ];
+      const columnLabels = {
+        serviceName: "Serviço",
+        waitingTimeLastTicket: "Último|atendimento",
+        averageServiceTime: "Atendimento|Médio",
+        waitingUsers: "Em espera",
+        lastTicketNumberAttended: "Senha|actual",
+        waitingStatus: "Estado da|espera",
+        getTicket: "Obter|senha"
+      };
+      const header = columns
+        .map(column => `<th class="${column}">${columnLabels[column].split("|").map(escapeHtml).join("<br>")}</th>`)
+        .join("");
+      currentItems = items;
+      const rows = items.map((item, index) => `<tr>${columns.map(column => {
+        const dataLabel = escapeHtml(columnLabels[column].replace("|", " "));
+        const value = item[column];
+        if (column === "serviceName") {
+          const icon = item.isOpen == null ? "⚪" : item.isOpen ? "🟢" : "🔴";
+          const label = item.isOpen == null ? "Desconhecido" : item.isOpen ? "Aberto" : "Fechado";
+          const displayValue = value == null ? "" : value;
+          return `<td class="${column}" data-label="${dataLabel}" title="${label}" aria-label="${label}: ${escapeHtml(displayValue)}"><span aria-hidden="true">${icon}</span> ${escapeHtml(displayValue)}</td>`;
+        }
+        if (column === "getTicket") {
+          return item.isOpen
+            ? `<td class="${column}" data-label="${dataLabel}"><button type="button" class="get-ticket-button" data-item-index="${index}">Obter senha</button></td>`
+            : `<td class="${column}" data-label="${dataLabel}" aria-label="Serviço fechado">—</td>`;
+        }
+        const displayValue = value == null
+          ? ""
+          : typeof value === "object"
+            ? JSON.stringify(value)
+            : value;
+        const formattedValue = ["waitingTimeLastTicket", "averageServiceTime"].includes(column)
+          ? formatTime(displayValue)
+          : displayValue;
+        return `<td class="${column}" data-label="${dataLabel}">${escapeHtml(formattedValue)}</td>`;
+      }).join("")}</tr>`).join("");
+
+      return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    function randomIpAddress() {
+      return Array.from({ length: 4 }, (_, index) => {
+        const minimum = index === 0 ? 1 : 0;
+        return Math.floor(Math.random() * (254 - minimum + 1)) + minimum;
+      }).join(".");
+    }
+
+    function divisionNameForService(item) {
+      if (item.divisionName) return item.divisionName;
+
+      const serviceName = String(item.serviceName ?? "").trim();
+      return serviceName ? `${serviceName.charAt(0).toUpperCase()}-${serviceName}` : "";
+    }
+
+    function createTicketPayload(item, phoneNumber) {
+      return {
+        pointOfCareName: "Balcão do IRN - Registo na Loja de Cidadão de Lisboa - Laranjeiras - V2",
+        divisionId: 1426,
+        sigaEntityIdentifier: item.sigaEntityIdentifier,
+        divisionName: divisionNameForService(item),
+        sigaInstituteIdentifier: item.sigaInstituteIdentifier,
+        sigaLocalIdentifier: item.sigaLocalIdentifier,
+        sigaServiceIdentifier: item.sigaServiceIdentifier,
+        languageCode: "pt",
+        systemType: 1,
+        confirmationType: 1,
+        organizationName: "Loja do cidadão",
+        userDeviceId: randomIpAddress(),
+        phoneNumber: Number(phoneNumber)
+      };
+    }
+
+    function renderTicketResponse(responseData) {
+      const ticket = responseData?.data ?? {};
+      const details = [
+        ticket.organizationName,
+        ticket.pointOfCareName,
+        ticket.divisionName
+      ].filter(Boolean).map(escapeHtml).join("<br>");
+      const ticketNumber = escapeHtml(ticket.ticketNumber ?? "—");
+      const ticketCode = ticket.ticketCode ? `<p><strong>Código:</strong> ${escapeHtml(ticket.ticketCode)}</p>` : "";
+      const message = ticket.message ? `<pre>${escapeHtml(ticket.message)}</pre>` : "";
+
+      return `<div class="ticket-success"><p class="ticket-number"><strong>Senha:</strong> ${ticketNumber}</p>${ticketCode}<p>${details}</p>${message}</div>`;
+    }
+
+    function setTicketModalMessage(content, isError = false) {
+      ticketModalMessage.classList.toggle("error", isError);
+      ticketModalMessage.innerHTML = content;
+    }
+
+    function openTicketModal(item) {
+      selectedService = item;
+      ticketForm.reset();
+      ticketPhoneInput.setCustomValidity("");
+      ticketPhoneInput.disabled = false;
+      ticketServiceName.textContent = item.serviceName ?? "";
+      setTicketModalMessage("");
+      submitTicketButton.hidden = false;
+      submitTicketButton.disabled = false;
+      cancelTicketButton.textContent = "Cancelar";
+      ticketModal.hidden = false;
+      ticketPhoneInput.focus();
+    }
+
+    function closeTicketModal() {
+      ticketModal.hidden = true;
+      selectedService = null;
+    }
+
+    resultElement.addEventListener("click", event => {
+      const button = event.target instanceof Element
+        ? event.target.closest(".get-ticket-button")
+        : null;
+      if (!button) return;
+
+      const item = currentItems[Number(button.dataset.itemIndex)];
+      if (item?.isOpen) openTicketModal(item);
+    });
+
+    closeTicketModalButton.addEventListener("click", closeTicketModal);
+    cancelTicketButton.addEventListener("click", closeTicketModal);
+    ticketModal.addEventListener("click", event => {
+      if (event.target === ticketModal) closeTicketModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !ticketModal.hidden) closeTicketModal();
+    });
+
+    ticketForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!selectedService) return;
+
+      const phoneNumber = ticketPhoneInput.value.replace(/\D/g, "");
+      ticketPhoneInput.value = phoneNumber;
+      ticketPhoneInput.setCustomValidity(/^\d{9}$/.test(phoneNumber) ? "" : "Introduza um número de telefone com 9 dígitos.");
+      if (!ticketForm.reportValidity()) return;
+
+      submitTicketButton.disabled = true;
+      ticketPhoneInput.disabled = true;
+      setTicketModalMessage("A requisitar a senha…");
+
+      try {
+        const response = await fetchWithToken(ticketEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8"
+          },
+          body: JSON.stringify(createTicketPayload(selectedService, phoneNumber))
+        });
+        const responseText = await response.text();
+        let responseData;
+
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = null;
+        }
+
+        const statusCode = Number(responseData?.statusCode);
+        if (!response.ok || (Number.isFinite(statusCode) && statusCode >= 400)) {
+          const message = responseData?.message || responseText || "Ticket request failed";
+          throw new Error(`HTTP ${response.status}: ${message}`);
+        }
+
+        setTicketModalMessage(renderTicketResponse(responseData));
+        submitTicketButton.hidden = true;
+        cancelTicketButton.textContent = "Fechar";
+      } catch (error) {
+        setTicketModalMessage(`<p>Request failed: ${escapeHtml(error.message)}</p><p>If this is a CORS error, enable CORS for the POST endpoint and try again.</p>`, true);
+        submitTicketButton.disabled = false;
+      } finally {
+        ticketPhoneInput.disabled = false;
+      }
+    });
+
+    async function fetchResult() {
+      if (requestInProgress || requestsStopped || document.hidden) return;
+      requestInProgress = true;
+      statusElement.textContent = "Fetching…";
+      resultElement.classList.remove("error");
+
+      try {
+        const response = await fetchWithToken(endpoint);
+
+        const responseText = await response.text();
+        let displayText;
+
+        try {
+          const responseData = JSON.parse(responseText);
+          displayText = renderTable(responseData.data);
+        } catch {
+          displayText = responseText;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${displayText}`);
+        }
+
+        resultElement.innerHTML = displayText || "(empty response)";
+        statusElement.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        resultElement.textContent = `Request failed\n\n${error.message}\n\n. Try disabling CORS (cross-origin restrictions) and check again.`;
+        resultElement.classList.add("error");
+        statusElement.textContent = `Error ${new Date().toLocaleTimeString()}`;
+      } finally {
+        requestInProgress = false;
+      }
+    }
+
+    if (endpoint) {
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          pausePolling();
+          return;
+        }
+
+        startPolling();
+        fetchResult();
+      });
+
+      startPolling();
+      if (!document.hidden) fetchResult();
+    } else {
+      resultElement.textContent = "Não foi possível construir o endereço do serviço.";
+      resultElement.classList.add("error");
+      statusElement.textContent = "Erro";
+    }
+  </script>
+</body>
+</html>

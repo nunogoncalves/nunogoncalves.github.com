@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Organizações - Mapa de Cidadão</title>
+  <link rel="stylesheet" href="MapaCidadaoOrganizations.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Organizações</h1>
+      <p id="status">A carregar…</p>
+    </header>
+
+    <section aria-labelledby="organizations-title">
+      <h2 id="organizations-title">Locais disponíveis</h2>
+      <label class="search-label" for="organization-search">Pesquisar por nome</label>
+      <input id="organization-search" type="search" placeholder="Escreva o nome…" autocomplete="off" spellcheck="false">
+      <div id="organizations-list" aria-live="polite"></div>
+    </section>
+
+    <footer>
+      <p>Fonte dos dados: <a href="https://mapa.digital.gov.pt" target="_blank" rel="noopener noreferrer">Mapa de Cidadão</a></p>
+      <p>Nota: esta página poderá não funcionar corretamente no Safari.</p>
+    </footer>
+  </main>
+
+  <script>
+    const proxyBase = "https://lojasdocidadao.up.railway.app";
+    const endpoint = `${proxyBase}/api/map/organization/group/1?languageCode=pt`;
+    const locationEndpointBase = `${proxyBase}/api/map/pointOfCare/location`;
+    const divisionEndpointBase = `${proxyBase}/api/map/pointOfCare/division`;
+    const tokenEndpoint = `${proxyBase}/api/map/token`;
+    let bearerToken = "";
+
+    console.info("[MapaCidadaoOrganizations] Loaded", {
+      pageOrigin: window.location.origin,
+      proxyBase,
+      tokenEndpoint
+    });
+
+    const statusElement = document.querySelector("#status");
+    const listElement = document.querySelector("#organizations-list");
+    const searchInput = document.querySelector("#organization-search");
+    const viewStateStorageKey = "mapaCidadaoOrganizationsState";
+    let allOrganizations = [];
+    let currentOrganizations = [];
+
+    function readViewState() {
+      try {
+        const storedState = JSON.parse(sessionStorage.getItem(viewStateStorageKey) || "null");
+        return storedState && typeof storedState === "object" ? storedState : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getOrganizationKey(organization) {
+      return String(
+        organization.organizationId
+          ?? organization.code
+          ?? organization.locationId
+          ?? organization.title
+      );
+    }
+
+    function saveViewState() {
+      const expandedOrganizations = [];
+      const expandedLocations = {};
+
+      listElement.querySelectorAll(".organization-button").forEach(button => {
+        if (button.getAttribute("aria-expanded") !== "true") return;
+
+        const organization = currentOrganizations[Number(button.dataset.itemIndex)];
+        if (!organization) return;
+
+        const organizationKey = getOrganizationKey(organization);
+        expandedOrganizations.push(organizationKey);
+
+        const locationIds = Array.from(
+          button.nextElementSibling?.querySelectorAll(".location-button[aria-expanded='true']") || []
+        )
+          .map(locationButton => locationButton.dataset.locationId)
+          .filter(Boolean);
+
+        if (locationIds.length) expandedLocations[organizationKey] = locationIds;
+      });
+
+      try {
+        sessionStorage.setItem(viewStateStorageKey, JSON.stringify({
+          searchTerm: searchInput.value,
+          expandedOrganizations,
+          expandedLocations
+        }));
+      } catch {
+        // State persistence is optional, so continue if storage is unavailable.
+      }
+    }
+
+    function normalizeForSearch(value) {
+      return String(value)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("pt-PT");
+    }
+
+    function applyOrganizationFilter() {
+      const searchTerm = normalizeForSearch(searchInput.value.trim());
+      const emptySearchElement = listElement.querySelector("#organization-search-empty");
+      let visibleCount = 0;
+
+      listElement.querySelectorAll(".organization-button").forEach(button => {
+        const organization = currentOrganizations[Number(button.dataset.itemIndex)];
+        const matches = !searchTerm || normalizeForSearch(organization.title).includes(searchTerm);
+        button.closest("li").hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      if (emptySearchElement) emptySearchElement.hidden = visibleCount > 0;
+    }
+
+    async function refreshToken() {
+      console.info("[MapaCidadaoOrganizations] Requesting token", {
+        url: tokenEndpoint,
+        pageOrigin: window.location.origin
+      });
+
+      let response;
+      try {
+        response = await fetch(tokenEndpoint, {
+          method: "GET",
+          cache: "no-store"
+        });
+      } catch (error) {
+        console.error("[MapaCidadaoOrganizations] Token request failed", {
+          url: tokenEndpoint,
+          pageOrigin: window.location.origin,
+          error
+        });
+        throw error;
+      }
+
+      console.info("[MapaCidadaoOrganizations] Token response", {
+        status: response.status,
+        ok: response.ok,
+        type: response.type,
+        contentType: response.headers.get("content-type")
+      });
+
+      let responseText;
+      try {
+        responseText = await response.text();
+      } catch (error) {
+        console.error("[MapaCidadaoOrganizations] Token body could not be decoded", {
+          url: tokenEndpoint,
+          status: response.status,
+          contentType: response.headers.get("content-type"),
+          error
+        });
+        throw error;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Token refresh failed: HTTP ${response.status}`);
+      }
+
+      let tokenData;
+      try {
+        tokenData = JSON.parse(responseText);
+      } catch {
+        tokenData = responseText.trim();
+      }
+
+      const newToken = typeof tokenData === "string"
+        ? tokenData
+        : tokenData?.data?.token
+          ?? tokenData?.token
+          ?? tokenData?.access_token
+          ?? tokenData?.accessToken
+          ?? "";
+
+      if (!newToken) {
+        throw new Error("Token refresh returned an empty token");
+      }
+
+      bearerToken = newToken.replace(/^Bearer\s+/i, "");
+
+      console.info("[MapaCidadaoOrganizations] Token received", {
+        hasToken: Boolean(bearerToken),
+        tokenLength: bearerToken.length
+      });
+    }
+
+    async function fetchWithToken(url) {
+      if (!bearerToken) await refreshToken();
+
+      const request = async () => {
+        console.info("[MapaCidadaoOrganizations] API request", {
+          url,
+          hasAuthorization: Boolean(bearerToken)
+        });
+
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${bearerToken}`
+            },
+            cache: "no-store"
+          });
+
+          console.info("[MapaCidadaoOrganizations] API response", {
+            url,
+            status: response.status,
+            ok: response.ok,
+            type: response.type,
+            contentType: response.headers.get("content-type")
+          });
+
+          return response;
+        } catch (error) {
+          console.error("[MapaCidadaoOrganizations] API request failed", {
+            url,
+            pageOrigin: window.location.origin,
+            error
+          });
+          throw error;
+        }
+      };
+
+      let response = await request();
+      if (response.status === 401) {
+        console.warn("[MapaCidadaoOrganizations] Token rejected; refreshing", {
+          url
+        });
+        await refreshToken();
+        response = await request();
+      }
+
+      return response;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderOrganizations(items) {
+      allOrganizations = items
+        .map(item => ({
+          ...item,
+          title: item?.title == null ? "" : String(item.title).trim()
+        }))
+        .filter(item => item.title);
+      currentOrganizations = allOrganizations;
+
+      if (!currentOrganizations.length) {
+        listElement.innerHTML = "<p>Não foram encontradas organizações com título.</p>";
+        return;
+      }
+
+      listElement.innerHTML = `<ul>${currentOrganizations.map((item, index) => `<li><button type="button" class="organization-button" data-item-index="${index}" aria-expanded="false" aria-controls="organization-locations-${index}">${escapeHtml(item.title)}</button><div id="organization-locations-${index}" class="organization-locations" hidden><h3>Pontos de atendimento</h3><div class="locations-list" aria-live="polite"></div></div></li>`).join("")}</ul><p id="organization-search-empty" hidden>Não foram encontradas organizações com esse nome.</p>`;
+      applyOrganizationFilter();
+    }
+
+    function titledItems(items) {
+      return items
+        .map(item => ({
+          ...item,
+          title: item?.title == null ? "" : String(item.title).trim()
+        }))
+        .filter(item => item.title);
+    }
+
+    function renderLocations(listElement, items) {
+      const locations = titledItems(items);
+
+      listElement.innerHTML = locations.length
+        ? `<ul>${locations.map((item, index) => `<li><button type="button" class="location-button" data-location-id="${escapeHtml(item.id)}" data-siga-institute-identifier="${escapeHtml(item.sigaInstituteIdentifier)}" data-siga-entity-identifier="${escapeHtml(item.sigaEntityIdentifier)}" data-siga-local-identifier="${escapeHtml(item.sigaLocalIdentifier)}" aria-expanded="false" aria-controls="location-divisions-${index}">${escapeHtml(item.title)}</button><div id="location-divisions-${index}" class="location-divisions" hidden><h4>Divisões</h4><div class="divisions-list" aria-live="polite"></div></div></li>`).join("")}</ul>`
+        : "<p>Não foram encontrados pontos de atendimento com título.</p>";
+    }
+
+    function renderDivisions(listElement, items, locationButton) {
+      const divisions = titledItems(items);
+
+      listElement.innerHTML = divisions.length
+        ? `<ul>${divisions.map(item => {
+          const openingHour = item?.openingHour == null ? "" : String(item.openingHour).trim();
+          const openingHourMarkup = openingHour
+            ? `<span class="division-opening-hour">${escapeHtml(openingHour)}</span>`
+            : "";
+
+          return `<li><button type="button" class="division-button" data-siga-institute-identifier="${escapeHtml(locationButton.dataset.sigaInstituteIdentifier)}" data-siga-entity-identifier="${escapeHtml(locationButton.dataset.sigaEntityIdentifier)}" data-siga-local-identifier="${escapeHtml(locationButton.dataset.sigaLocalIdentifier)}" data-opening-hour="${escapeHtml(openingHour)}"><span class="division-title">${escapeHtml(item.title)}</span>${openingHourMarkup}</button></li>`;
+        }).join("")}</ul>`
+        : "<p>Este balcão não disponibiliza senhas digitais.</p>";
+    }
+
+    function locationEndpointForOrganization(organization) {
+      const locationId = Number(organization.locationId);
+      return Number.isInteger(locationId) && locationId > 0
+        ? `${locationEndpointBase}/${encodeURIComponent(locationId)}?languageCode=pt`
+        : "";
+    }
+
+    function divisionEndpointForLocation(locationId) {
+      const id = Number(locationId);
+      return Number.isInteger(id) && id > 0
+        ? `${divisionEndpointBase}/${encodeURIComponent(id)}?languageCode=pt`
+        : "";
+    }
+
+    async function loadLocations(organization, button, options = {}) {
+      const locationsPanel = button.nextElementSibling;
+      const locationsListElement = locationsPanel.querySelector(".locations-list");
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+      if (isExpanded && !options.keepExpanded) {
+        button.setAttribute("aria-expanded", "false");
+        locationsPanel.hidden = true;
+        saveViewState();
+        return;
+      }
+
+      if (!isExpanded) {
+        button.setAttribute("aria-expanded", "true");
+        locationsPanel.hidden = false;
+      }
+      locationsListElement.textContent = "A carregar…";
+
+      const requestUrl = locationEndpointForOrganization(organization);
+      if (!requestUrl) {
+        locationsListElement.textContent = "Este item não tem um locationId válido.";
+        statusElement.textContent = "Erro";
+        return;
+      }
+
+      try {
+        const response = await fetchWithToken(requestUrl);
+        const responseText = await response.text();
+        let responseData;
+
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = null;
+        }
+
+        const statusCode = Number(responseData?.statusCode);
+        if (!response.ok || (Number.isFinite(statusCode) && statusCode >= 400)) {
+          const message = responseData?.message || responseText || "Location request failed";
+          throw new Error(`HTTP ${response.status}: ${message}`);
+        }
+
+        renderLocations(locationsListElement, Array.isArray(responseData?.data) ? responseData.data : []);
+
+        const expandedLocationIds = new Set(options.restoreLocationIds || []);
+        await Promise.all(
+          Array.from(locationsListElement.querySelectorAll(".location-button"))
+            .filter(locationButton => expandedLocationIds.has(locationButton.dataset.locationId))
+            .map(locationButton => loadDivisions(locationButton, { keepExpanded: true }))
+        );
+
+        saveViewState();
+        statusElement.textContent = `Locais atualizados às ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error("[MapaCidadaoOrganizations] Location request failed", {
+          url: requestUrl,
+          error
+        });
+        locationsListElement.textContent = `Request failed: ${error.message}`;
+        statusElement.textContent = "Erro";
+      }
+    }
+
+    async function loadDivisions(button, options = {}) {
+      const divisionsPanel = button.nextElementSibling;
+      const divisionsListElement = divisionsPanel.querySelector(".divisions-list");
+      const isExpanded = button.getAttribute("aria-expanded") === "true";
+
+      if (isExpanded && !options.keepExpanded) {
+        button.setAttribute("aria-expanded", "false");
+        divisionsPanel.hidden = true;
+        saveViewState();
+        return;
+      }
+
+      if (!isExpanded) {
+        button.setAttribute("aria-expanded", "true");
+        divisionsPanel.hidden = false;
+      }
+      divisionsListElement.textContent = "A carregar…";
+
+      const requestUrl = divisionEndpointForLocation(button.dataset.locationId);
+      if (!requestUrl) {
+        divisionsListElement.textContent = "Este item não tem um id válido.";
+        statusElement.textContent = "Erro";
+        return;
+      }
+
+      try {
+        const response = await fetchWithToken(requestUrl);
+        const responseText = await response.text();
+        let responseData;
+
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = null;
+        }
+
+        const statusCode = Number(responseData?.statusCode);
+        if (!response.ok || (Number.isFinite(statusCode) && statusCode >= 400)) {
+          const message = responseData?.message || responseText || "Division request failed";
+          throw new Error(`HTTP ${response.status}: ${message}`);
+        }
+
+        renderDivisions(divisionsListElement, Array.isArray(responseData?.data) ? responseData.data : [], button);
+        saveViewState();
+        statusElement.textContent = `Divisões atualizadas às ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error("[MapaCidadaoOrganizations] Division request failed", {
+          url: requestUrl,
+          error
+        });
+        divisionsListElement.textContent = `Request failed: ${error.message}`;
+        statusElement.textContent = "Erro";
+      }
+    }
+
+    listElement.addEventListener("click", event => {
+      const target = event.target instanceof Element ? event.target : null;
+      const divisionButton = target?.closest(".division-button");
+      if (divisionButton) {
+        saveViewState();
+        const query = new URLSearchParams({
+          sigaInstituteIdentifier: divisionButton.dataset.sigaInstituteIdentifier,
+          sigaEntityIdentifier: divisionButton.dataset.sigaEntityIdentifier,
+          sigaLocalIdentifier: divisionButton.dataset.sigaLocalIdentifier,
+          title: divisionButton.querySelector(".division-title")?.textContent.trim() || divisionButton.textContent.trim(),
+          openingHour: divisionButton.dataset.openingHour || "",
+          from: "organizations"
+        });
+        window.location.href = `LojaCidadaoWaitingTickets.html?${query}`;
+        return;
+      }
+
+      const locationButton = target?.closest(".location-button");
+      if (locationButton) {
+        loadDivisions(locationButton);
+        return;
+      }
+
+      const organizationButton = target
+        ? target.closest(".organization-button")
+        : null;
+      if (!organizationButton) return;
+
+      const organization = currentOrganizations[Number(organizationButton.dataset.itemIndex)];
+      if (organization) loadLocations(organization, organizationButton);
+    });
+
+    searchInput.addEventListener("input", () => {
+      applyOrganizationFilter();
+      saveViewState();
+    });
+
+    async function restoreViewState(viewState) {
+      const expandedOrganizations = new Set(viewState?.expandedOrganizations || []);
+      const expandedLocations = viewState?.expandedLocations || {};
+
+      await Promise.all(
+        Array.from(listElement.querySelectorAll(".organization-button"))
+          .filter(button => {
+            const organization = currentOrganizations[Number(button.dataset.itemIndex)];
+            return organization && expandedOrganizations.has(getOrganizationKey(organization));
+          })
+          .map(button => {
+            const organization = currentOrganizations[Number(button.dataset.itemIndex)];
+            return loadLocations(organization, button, {
+              keepExpanded: true,
+              restoreLocationIds: expandedLocations[getOrganizationKey(organization)] || []
+            });
+          })
+      );
+
+      saveViewState();
+    }
+
+    async function loadOrganizations() {
+      statusElement.textContent = "A carregar…";
+
+      try {
+        const response = await fetchWithToken(endpoint);
+        const responseText = await response.text();
+        let responseData;
+
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = null;
+        }
+
+        const statusCode = Number(responseData?.statusCode);
+        if (!response.ok || (Number.isFinite(statusCode) && statusCode >= 400)) {
+          const message = responseData?.message || responseText || "Organization request failed";
+          throw new Error(`HTTP ${response.status}: ${message}`);
+        }
+
+        const viewState = readViewState();
+        if (viewState?.searchTerm) searchInput.value = viewState.searchTerm;
+        renderOrganizations(Array.isArray(responseData?.data) ? responseData.data : []);
+        await restoreViewState(viewState);
+        statusElement.textContent = `Atualizado às ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        console.error("[MapaCidadaoOrganizations] Organization request failed", {
+          url: endpoint,
+          error
+        });
+        listElement.textContent = `Request failed: ${error.message}`;
+        statusElement.textContent = "Erro";
+      }
+    }
+
+    loadOrganizations();
+  </script>
+</body>
+</html>
