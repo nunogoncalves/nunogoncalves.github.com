@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Point of Care Monitor</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #050505;
+      color: #fff;
+      padding: 3vw;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    h1 {
+      margin: 0;
+      color: #58ff8a;
+      font-size: clamp(2.5rem, 7vw, 8rem);
+      line-height: .95;
+      letter-spacing: -.04em;
+    }
+
+    #status {
+      color: #aaa;
+      font-size: clamp(1.1rem, 2.5vw, 2rem);
+    }
+
+    #result {
+      margin: 3vw 0 0;
+      min-height: 65vh;
+      padding: 2rem;
+      border: 4px solid #333;
+      border-radius: 1rem;
+      background: #111;
+      color: #fff;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: clamp(2rem, 6vw, 8rem);
+      font-weight: 800;
+      line-height: 1.05;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      overflow: auto;
+    }
+
+    #result table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(.8rem, 1.4vw, 1.4rem);
+      font-weight: 500;
+      line-height: 1.25;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    #result th,
+    #result td {
+      padding: .75rem 1rem;
+      border-bottom: 1px solid #444;
+      vertical-align: top;
+    }
+
+    #result th {
+      color: #58ff8a;
+      font-weight: 800;
+      white-space: normal;
+    }
+
+    #result.error {
+      border-color: #ff4545;
+      color: #ff7373;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Point of Care</h1>
+    <div id="status">Loading…</div>
+  </header>
+
+  <div id="result">Waiting for the first response…</div>
+
+  <script>
+    const endpoint = "https://prdmdcportal.azurewebsites.net/api/map/pointOfCare/division/siga/2/176/36";
+    const tokenEndpoint = "https://prdmdcportal.azurewebsites.net/api/map/QU1BU3lDUzA4OTROdUR2MVh2eXZUd0FHQVNheUtUeDRaMGRDaWQxRQ==/38.75252191297183/-9.166998699563388/token";
+    let bearerToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjaXRpemVuTWFwLWxhdGl0dWRlIjoiMzguNzUyNTIxOTEyOTcxODMiLCJjaXRpemVuTWFwLWxvbmdpdHVkZSI6Ii05LjE2Njk5ODY5OTU2MzM4OCIsImV4cCI6MTc4ODUxNzcyNn0.uHSu841mmBKCXRHY6Grz3tGNh8NGySOgGer4-hKho4E";
+    const pollEveryMs = 30_000;
+
+    const resultElement = document.querySelector("#result");
+    const statusElement = document.querySelector("#status");
+    let requestInProgress = false;
+    let requestsStopped = false;
+    let pollTimer;
+
+    function stopPolling() {
+      requestsStopped = true;
+      clearInterval(pollTimer);
+    }
+
+    async function refreshToken() {
+      try {
+        const response = await fetch(tokenEndpoint, {
+          method: "GET",
+          cache: "no-store"
+        });
+        const responseText = await response.text();
+
+        if (!response.ok) {
+          throw new Error(`Token refresh failed: HTTP ${response.status}`);
+        }
+
+        let newToken = responseText.trim();
+
+        try {
+          const tokenData = JSON.parse(responseText);
+          if (typeof tokenData === "string") {
+            newToken = tokenData;
+          } else if (tokenData && typeof tokenData === "object") {
+            newToken = tokenData.token
+              ?? tokenData.data?.token
+              ?? tokenData.access_token
+              ?? tokenData.accessToken
+              ?? "";
+          } else {
+            newToken = "";
+          }
+        } catch {
+          // The token endpoint returned the token as plain text.
+        }
+
+        if (!newToken) {
+          throw new Error("Token refresh returned an empty token");
+        }
+
+        bearerToken = newToken.replace(/^Bearer\s+/i, "");
+      } catch (error) {
+        stopPolling();
+        throw error;
+      }
+    }
+
+    async function fetchWithToken() {
+      let response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${bearerToken}`
+        },
+        cache: "no-store"
+      });
+
+      if (response.status === 401) {
+        await refreshToken();
+
+        response = await fetch(endpoint, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${bearerToken}`
+          },
+          cache: "no-store"
+        });
+
+        if (response.status === 401) {
+          stopPolling();
+          throw new Error("HTTP 401 after token refresh");
+        }
+      }
+
+      return response;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function renderTable(items) {
+      if (!items.length) return "<p>No data available.</p>";
+
+      const columns = [
+        "serviceName",
+        "isOpen",
+        "waitingTimeLastTicket",
+        "averageServiceTime",
+        "waitingUsers",
+        "lastTicketNumberAttended",
+        "waitingStatus"
+      ];
+      const columnLabels = {
+        serviceName: "Serviço",
+        isOpen: "Aberto",
+        waitingTimeLastTicket: "Espera do|último atendimento",
+        averageServiceTime: "Tempo médio de|atendimento",
+        waitingUsers: "Utilizadores em|espera",
+        lastTicketNumberAttended: "Última senha|atendida",
+        waitingStatus: "Estado da|espera"
+      };
+      const header = columns
+        .map(column => `<th>${columnLabels[column].split("|").map(escapeHtml).join("<br>")}</th>`)
+        .join("");
+      const rows = items.map(item => `<tr>${columns.map(column => {
+        const value = item[column];
+        if (column === "isOpen") {
+          const icon = value == null ? "⚪" : value ? "🟢" : "🔴";
+          const label = value == null ? "Desconhecido" : value ? "Aberto" : "Fechado";
+          return `<td title="${label}" aria-label="${label}">${icon}</td>`;
+        }
+        const displayValue = value == null
+          ? ""
+          : typeof value === "object"
+            ? JSON.stringify(value)
+            : value;
+        return `<td>${escapeHtml(displayValue)}</td>`;
+      }).join("")}</tr>`).join("");
+
+      return `<table><thead><tr>${header}</tr></thead><tbody>${rows}</tbody></table>`;
+    }
+
+    async function fetchResult() {
+      if (requestInProgress || requestsStopped) return;
+      requestInProgress = true;
+      statusElement.textContent = "Fetching…";
+      resultElement.classList.remove("error");
+
+      try {
+        const response = await fetchWithToken();
+
+        const responseText = await response.text();
+        let displayText;
+
+        try {
+          const responseData = JSON.parse(responseText);
+          displayText = renderTable(responseData.data);
+        } catch {
+          displayText = responseText;
+        }
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${displayText}`);
+        }
+
+        resultElement.innerHTML = displayText || "(empty response)";
+        statusElement.textContent = `Updated ${new Date().toLocaleTimeString()}`;
+      } catch (error) {
+        resultElement.textContent = `Request failed\n\n${error.message}`;
+        resultElement.classList.add("error");
+        statusElement.textContent = `Error ${new Date().toLocaleTimeString()}`;
+      } finally {
+        requestInProgress = false;
+      }
+    }
+
+    pollTimer = setInterval(fetchResult, pollEveryMs);
+    fetchResult();
+  </script>
+</body>
+</html>
