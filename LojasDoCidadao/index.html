@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Organizações - Mapa de Cidadão</title>
-  <link rel="stylesheet" href="MapaCidadaoOrganizations.css">
+  <link rel="stylesheet" href="style/index.css">
 </head>
 <body>
   <main>
@@ -34,7 +34,7 @@
     const tokenEndpoint = `${proxyBase}/api/map/token`;
     let bearerToken = "";
 
-    console.info("[MapaCidadaoOrganizations] Loaded", {
+    console.info("[LojasDoCidadao] Loaded", {
       pageOrigin: window.location.origin,
       proxyBase,
       tokenEndpoint
@@ -121,7 +121,7 @@
     }
 
     async function refreshToken() {
-      console.info("[MapaCidadaoOrganizations] Requesting token", {
+      console.info("[LojasDoCidadao] Requesting token", {
         url: tokenEndpoint,
         pageOrigin: window.location.origin
       });
@@ -133,7 +133,7 @@
           cache: "no-store"
         });
       } catch (error) {
-        console.error("[MapaCidadaoOrganizations] Token request failed", {
+        console.error("[LojasDoCidadao] Token request failed", {
           url: tokenEndpoint,
           pageOrigin: window.location.origin,
           error
@@ -141,7 +141,7 @@
         throw error;
       }
 
-      console.info("[MapaCidadaoOrganizations] Token response", {
+      console.info("[LojasDoCidadao] Token response", {
         status: response.status,
         ok: response.ok,
         type: response.type,
@@ -152,7 +152,7 @@
       try {
         responseText = await response.text();
       } catch (error) {
-        console.error("[MapaCidadaoOrganizations] Token body could not be decoded", {
+        console.error("[LojasDoCidadao] Token body could not be decoded", {
           url: tokenEndpoint,
           status: response.status,
           contentType: response.headers.get("content-type"),
@@ -186,7 +186,7 @@
 
       bearerToken = newToken.replace(/^Bearer\s+/i, "");
 
-      console.info("[MapaCidadaoOrganizations] Token received", {
+      console.info("[LojasDoCidadao] Token received", {
         hasToken: Boolean(bearerToken),
         tokenLength: bearerToken.length
       });
@@ -196,7 +196,7 @@
       if (!bearerToken) await refreshToken();
 
       const request = async () => {
-        console.info("[MapaCidadaoOrganizations] API request", {
+        console.info("[LojasDoCidadao] API request", {
           url,
           hasAuthorization: Boolean(bearerToken)
         });
@@ -210,7 +210,7 @@
             cache: "no-store"
           });
 
-          console.info("[MapaCidadaoOrganizations] API response", {
+          console.info("[LojasDoCidadao] API response", {
             url,
             status: response.status,
             ok: response.ok,
@@ -220,7 +220,7 @@
 
           return response;
         } catch (error) {
-          console.error("[MapaCidadaoOrganizations] API request failed", {
+          console.error("[LojasDoCidadao] API request failed", {
             url,
             pageOrigin: window.location.origin,
             error
@@ -231,7 +231,7 @@
 
       let response = await request();
       if (response.status === 401) {
-        console.warn("[MapaCidadaoOrganizations] Token rejected; refreshing", {
+        console.warn("[LojasDoCidadao] Token rejected; refreshing", {
           url
         });
         await refreshToken();
@@ -368,7 +368,7 @@
         saveViewState();
         statusElement.textContent = `Locais atualizados às ${new Date().toLocaleTimeString()}`;
       } catch (error) {
-        console.error("[MapaCidadaoOrganizations] Location request failed", {
+        console.error("[LojasDoCidadao] Location request failed", {
           url: requestUrl,
           error
         });
@@ -423,7 +423,7 @@
         saveViewState();
         statusElement.textContent = `Divisões atualizadas às ${new Date().toLocaleTimeString()}`;
       } catch (error) {
-        console.error("[MapaCidadaoOrganizations] Division request failed", {
+        console.error("[LojasDoCidadao] Division request failed", {
           url: requestUrl,
           error
         });
@@ -445,7 +445,7 @@
           openingHour: divisionButton.dataset.openingHour || "",
           from: "organizations"
         });
-        window.location.href = `LojaCidadaoWaitingTickets.html?${query}`;
+        window.location.href = `ServiceLines.html?${query}`;
         return;
       }
 
@@ -517,7 +517,7 @@
         await restoreViewState(viewState);
         statusElement.textContent = `Atualizado às ${new Date().toLocaleTimeString()}`;
       } catch (error) {
-        console.error("[MapaCidadaoOrganizations] Organization request failed", {
+        console.error("[LojasDoCidadao] Organization request failed", {
           url: endpoint,
           error
         });
