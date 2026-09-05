@@ -62,11 +62,7 @@
       "image_url": "Profile/images/SocialSources/stackoverflow.png",
       "link" : "http://stackoverflow.com/users/919445/nuno-gon%C3%A7alves"
     }, {
-      "name" : "App Store",
-      "image_url": "Profile/images/SocialSources/appstore.png",
-      "link" : "https://itunes.apple.com/developer/nuno-goncalves/id990207056"
-    }, {
-      "name" : "CV",
+      "name" : "Resume",
       "image_url": "Profile/images/SocialSources/resume.png",
       "link" : "https://github.com/nunogoncalves/resume/blob/master/Resume/Resume.pdf"
     }

@@ -30,11 +30,13 @@
 
           <nav class="social-links" aria-label="Social links">
             <a class="social-link" href="mailto:{{email}}" aria-label="Email {{name}}">
-              <img class="source_icon" src="{{email_url}}" alt="Email">
+              <img class="source_icon" src="{{email_url}}" alt="">
+              <span class="source-label">Email</span>
             </a>
             {{#each social_sources}}
               <a class="social-link" href="{{link}}" target="_blank" rel="noopener noreferrer" aria-label="{{name}}">
-                <img class="source_icon" src="{{image_url}}" alt="{{name}}">
+                <img class="source_icon" src="{{image_url}}" alt="">
+                <span class="source-label">{{name}}</span>
               </a>
             {{/each}}
           </nav>
