@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css?v=3" media="screen">
+    <link rel="stylesheet" type="text/css" href="Profile/stylesheets/style.css?v=3" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -54,15 +54,15 @@
       </main>
     </script>
 
-    <script src="javascripts/main.js"></script>
-    <script src="javascripts/vendor/handlebars-v4.0.5.js"></script>
+    <script src="Profile/javascripts/main.js"></script>
+    <script src="Profile/javascripts/vendor/handlebars-v4.0.5.js"></script>
     <script>
       (function() {
         loadGoogleAnalytics();
         loadPageTracker();
 
         var xhttp = new XMLHttpRequest();
-        xhttp.open("GET", "params.json", false);
+        xhttp.open("GET", "Profile/params.json", false);
         xhttp.send();
 
         var profileJSON = JSON.parse(xhttp.responseText)

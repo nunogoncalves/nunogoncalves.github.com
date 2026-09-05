@@ -2,7 +2,7 @@
   "name" : "Nuno Gonçalves",
   "title" : "iOS Developer",
   "email" : "goncalves.cm.nuno@gmail.com",
-  "email_url": "images/SocialSources/email.png",
+  "email_url": "Profile/images/SocialSources/email.png",
   "location" : "Lisbon, Portugal",
   "avatar_url" : "https://avatars3.githubusercontent.com/u/3007012",
   "projects" : [],
@@ -43,31 +43,31 @@
   },
   "social_sources" : [{
       "name" : "Github",
-      "image_url": "images/SocialSources/github.png",
+      "image_url": "Profile/images/SocialSources/github.png",
       "link" : "https://github.com/nunogoncalves"
     }, {
       "name" : "Medium",
-      "image_url": "images/SocialSources/medium.png",
+      "image_url": "Profile/images/SocialSources/medium.png",
       "link" : "https://medium.com/@nunogonalves"
     }, {
       "name" : "Linkedin",
-      "image_url": "images/SocialSources/linkedin.png",
+      "image_url": "Profile/images/SocialSources/linkedin.png",
       "link" : "https://pt.linkedin.com/in/goncalvescmnuno"
     }, {
       "name" : "Twitter",
-      "image_url": "images/SocialSources/twitter.png",
+      "image_url": "Profile/images/SocialSources/twitter.png",
       "link" : "https://twitter.com/goncalvescmnuno"
     }, {
       "name" : "StackOverflow",
-      "image_url": "images/SocialSources/stackoverflow.png",
+      "image_url": "Profile/images/SocialSources/stackoverflow.png",
       "link" : "http://stackoverflow.com/users/919445/nuno-gon%C3%A7alves"
     }, {
       "name" : "App Store",
-      "image_url": "images/SocialSources/appstore.png",
+      "image_url": "Profile/images/SocialSources/appstore.png",
       "link" : "https://itunes.apple.com/developer/nuno-goncalves/id990207056"
     }, {
       "name" : "CV",
-      "image_url": "images/SocialSources/resume.png",
+      "image_url": "Profile/images/SocialSources/resume.png",
       "link" : "https://github.com/nunogoncalves/resume/blob/master/Resume/Resume.pdf"
     }
   ]
