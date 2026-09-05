@@ -158,6 +158,10 @@
     }
 
     async function fetchWithToken(url, options = {}) {
+      if (!bearerToken) {
+        await refreshToken();
+      }
+
       const request = () => fetch(url, {
         ...options,
         headers: {

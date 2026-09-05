@@ -5,4 +5,4 @@ Ultimate Tic tac toe to play with girlfriend.
 
 
 # How to play this without having to clone this?
-You can play this game [here](http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html)
+You can play this game [here](https://nunogoncalves.github.io/TicTacToeUltimate/)

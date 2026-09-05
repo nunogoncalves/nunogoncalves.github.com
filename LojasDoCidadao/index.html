@@ -3,26 +3,32 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Organizações - Mapa de Cidadão</title>
+  <title>Lojas do cidadão</title>
   <link rel="stylesheet" href="style/index.css">
 </head>
 <body>
   <main>
     <header>
-      <h1>Organizações</h1>
+      <h1>Lojas do Cidadão</h1>
       <p id="status">A carregar…</p>
     </header>
 
     <section aria-labelledby="organizations-title">
-      <h2 id="organizations-title">Locais disponíveis</h2>
       <label class="search-label" for="organization-search">Pesquisar por nome</label>
       <input id="organization-search" type="search" placeholder="Escreva o nome…" autocomplete="off" spellcheck="false">
       <div id="organizations-list" aria-live="polite"></div>
     </section>
 
-    <footer>
-      <p>Fonte dos dados: <a href="https://mapa.digital.gov.pt" target="_blank" rel="noopener noreferrer">Mapa de Cidadão</a></p>
-      <p>Nota: esta página poderá não funcionar corretamente no Safari.</p>
+    <footer class="site-footer">
+      <div class="footer-heading">
+        <strong>Lojas do Cidadão</strong>
+        <span>Nuno Gonçalves</span>
+      </div>
+
+      <nav class="footer-links" aria-label="Links do rodapé">
+        <a href="../index.html">Página inicial</a>
+        <a href="https://mapa.digital.gov.pt" target="_blank" rel="noopener noreferrer">Fonte dos dados: Mapa de Cidadão</a>
+      </nav>
     </footer>
   </main>
 
@@ -263,7 +269,6 @@
         listElement.innerHTML = "<p>Não foram encontradas organizações com título.</p>";
         return;
       }
-
       listElement.innerHTML = `<ul>${currentOrganizations.map((item, index) => `<li><button type="button" class="organization-button" data-item-index="${index}" aria-expanded="false" aria-controls="organization-locations-${index}">${escapeHtml(item.title)}</button><div id="organization-locations-${index}" class="organization-locations" hidden><h3>Pontos de atendimento</h3><div class="locations-list" aria-live="polite"></div></div></li>`).join("")}</ul><p id="organization-search-empty" hidden>Não foram encontradas organizações com esse nome.</p>`;
       applyOrganizationFilter();
     }
