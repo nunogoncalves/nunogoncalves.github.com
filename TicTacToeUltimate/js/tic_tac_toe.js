@@ -19,6 +19,7 @@ $.ticTacToe = {
   },
 
   nextPlayer: 'oImg',
+  gameFinished: false,
 
   winningCombinations: [
       ['northwest', 'north',  'northeast'],
@@ -106,8 +107,8 @@ $.ticTacToe = {
       [
           "east_northwest",
           "east_north",
-          "center_northeast",
-          "center_west",
+          "east_northeast",
+          "east_west",
           "east_center",
           "east_east",
           "east_southwest",
@@ -161,7 +162,7 @@ $.ticTacToe = {
 
   load: function() {
     var self          = $.ticTacToe,
-        cellTemplate  = $('#player_image_template').html();
+        cellTemplate  = $('#player_image_template').html(),
         gameTemplate  = $('#inner_game_won').html();
 
     self.playerCellTemplate = Handlebars.compile(cellTemplate);
@@ -174,21 +175,31 @@ $.ticTacToe = {
   restart: function() {
     var self = $.ticTacToe;
     self.nextPlayer = 'oImg';
+    self.gameFinished = false;
     $.rules.numberOfPlays = 0;
     self.closedGames = [];
-    $('.inner_game.td').html('')
-    $('td').removeClass('playedAlready');
-    $('table').removeClass('finished');
-    $('table').removeClass('playHereNext');
-    $('table').closest('td').removeClass('playHereNext');
-    $('img').remove();
+    self.closedGamesWinners = ["", "", "", "", "", "", "", "", ""];
+    $(".inner_game img").remove();
+    $(".inner_game td").removeClass("playedAlready");
+    $(".inner_game").removeClass("finished wonTable playHereNext canPlayHere");
+    $(".inner_game").closest("td").removeClass("playHereNext");
+    $("#overlay").empty().css("z-index", -10);
+    $("#next_player").html(
+      '<img src="' + self.playerImages[self.nextPlayer] + '" alt="' + self.playerNames[self.nextPlayer] + '">'
+    );
 
     // alert dialog
     alertify.success("Restarted");
   },
 
-  showWinner: function() {
-    alertify.alert("Player " + $.ticTacToe.playerNames[$.ticTacToe.nextPlayer]);
+  showWinner: function(playerName) {
+    var symbol = playerName === "noughts" ? "O" : "X";
+    var image = playerName === "noughts"
+      ? $.ticTacToe.playerImages.oImg
+      : $.ticTacToe.playerImages.xImg;
+    alertify.alert(
+      '<span class="winner-message"><img src="' + image + '" alt="' + symbol + ' wins"><span>wins!</span></span>'
+    );
   },
 
   overCell: function($cell) {
@@ -198,8 +209,11 @@ $.ticTacToe = {
 
   clickedCell: function($cell) {
     var self = $.ticTacToe;
+    if (self.gameFinished) { return; }
+
     if ($.rules.canPlayInCell($cell)) {
       self.playInCell($cell);
+      if (self.gameFinished) { return; }
       self.prepareNextPlay($cell);
       $.rules.numberOfPlays ++;
     }
@@ -226,91 +240,32 @@ $.ticTacToe = {
     $cell.html(html);
 
     if (rules.finishedSubGame($cell)) {
-      var $closedTable = $cell.closest('table')
-
-
+      var $closedTable = $cell.closest('table');
       $closedTable.addClass('finished');
-      var html = self.gameCellTemplate(context);
-      $closedTable.append(html);
+      $closedTable.append(self.gameCellTemplate(context));
 
-      var classes = $closedTable[0].className.split(" ")
-      let positions = [
+      var classes = $closedTable[0].className.split(" ");
+      var positions = [
         'northwest', 'north',  'northeast',
         'west',      'center', 'east',
         'southwest', 'south',  'southeast'
-      ]
-      var closedGamesWinners = this.closedGamesWinners
-      for(i=0;i<=positions.length -1;i++) {
-        if (classes.includes(positions[i]) && closedGamesWinners[i] == "") {
-          closedGamesWinners[i] = context.playerName
-        }
-      }
-      // return
-      // I know I know... just wanted to see this working!
-      var width = 20
+      ];
+      var closedGamesWinners = self.closedGamesWinners;
 
-      // Horizontal
-      if (closedGamesWinners[0] == closedGamesWinners[1] && closedGamesWinners[1] == closedGamesWinners[2]) {
-        if (closedGamesWinners[0] != "") {
-          var color = closedGamesWinners[0] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[0], color, width)
-          return
-        }
-      }
-      if (closedGamesWinners[3] == closedGamesWinners[4] && closedGamesWinners[4] == closedGamesWinners[5]) {
-        if (closedGamesWinners[3] != "") {
-          var color = closedGamesWinners[3] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[1], color, width)
-          return
-        }
-      }
-      if (closedGamesWinners[6] == closedGamesWinners[7] && closedGamesWinners[7] == closedGamesWinners[8]) {
-        if (closedGamesWinners[6] != "") {
-          var color = closedGamesWinners[6] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[2], color, width)
-          return
+      for (var i = 0; i < positions.length; i++) {
+        if (classes.includes(positions[i]) && closedGamesWinners[i] === "") {
+          closedGamesWinners[i] = context.playerName;
         }
       }
 
-      // Vertical
-      if (closedGamesWinners[0] == closedGamesWinners[3] && closedGamesWinners[3] == closedGamesWinners[6]) {
-        if (closedGamesWinners[0] != "") {
-          var color = closedGamesWinners[0] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[3], color, width)
-          return
-        }
+      var result = rules.winner();
+      if (result) {
+        var color = result.player === "noughts" ? "#B12716" : "#007EFF";
+        self.connect_winning_element(self.winningElements[result.line], color, 20);
+        self.gameFinished = true;
+        self.showWinner(result.player);
       }
-      if (closedGamesWinners[1] == closedGamesWinners[4] && closedGamesWinners[4] == closedGamesWinners[7]) {
-        if (closedGamesWinners[1] != "") {
-          var color = closedGamesWinners[1] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[4], color, width)
-          return
-        }
-      }
-      if (closedGamesWinners[2] == closedGamesWinners[5] && closedGamesWinners[5] == closedGamesWinners[8]) {
-        if (closedGamesWinners[2] != "") {
-          var color = closedGamesWinners[2] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[5], color, width)
-          return
-        }
-      }
-      
-      // Diagonals
-      if (closedGamesWinners[0] == closedGamesWinners[4] && closedGamesWinners[4] == closedGamesWinners[8]) {
-        if (closedGamesWinners[0] != "") {
-          var color = closedGamesWinners[0] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[6], color, width)
-          return
-        }
-      }
-      if (closedGamesWinners[2] == closedGamesWinners[4] && closedGamesWinners[4] == closedGamesWinners[6]) {
-        if (closedGamesWinners[2] != "") {
-          var color = closedGamesWinners[2] == "noughts" ? "#B12716" : "#007EFF" 
-          this.connect_winning_element(this.winningElements[7], color, width)
-          return
-        }
-      }
-    };
+    }
 
   },
 
@@ -325,6 +280,13 @@ $.ticTacToe = {
     } else {
       $nextAvailableGame = rules.nextSubGameToPlay($cell);
     }
+
+    if (!$nextAvailableGame.length) {
+      self.gameFinished = true;
+      alertify.alert("Draw!");
+      return;
+    }
+
     $('.inner_game').removeClass('playHereNext');
     $('.inner_game').closest('td').removeClass('playHereNext');
     $nextAvailableGame.removeClass('playHereNext');
@@ -332,9 +294,11 @@ $.ticTacToe = {
     $nextAvailableGame.addClass('playHereNext');
     $nextAvailableGame.closest('td').addClass('playHereNext');
     self.nextPlayer = self.nextPlayer == 'xImg' ? 'oImg' : 'xImg';
-    var context = { playerImage: self.playerImages[self.nextPlayer] }
-    var html    = self.gameCellTemplate(context);
-    $('#next_player').html(html);
+    var context = {
+      playerName: self.playerNames[self.nextPlayer],
+      playerImage: self.playerImages[self.nextPlayer]
+    };
+    $('#next_player').html(self.playerCellTemplate(context));
   },
 
   connect_winning_element: function(winner_element, color, thickness) {
@@ -343,14 +307,16 @@ $.ticTacToe = {
   },
 
   connect: function(div1, div2, color, thickness) {
-    var off1 = this.getOffset(document.getElementById(div1));
-    var off2 = this.getOffset(document.getElementById(div2));
+    var overlay = document.getElementById("overlay");
+    var overlayRect = overlay.getBoundingClientRect();
+    var firstRect = document.getElementById(div1).getBoundingClientRect();
+    var secondRect = document.getElementById(div2).getBoundingClientRect();
 
-    var x1 = off1.left + off1.width / 2;
-    var y1 = off1.top + off1.height / 2;
+    var x1 = firstRect.left - overlayRect.left + firstRect.width / 2;
+    var y1 = firstRect.top - overlayRect.top + firstRect.height / 2;
 
-    var x2 = off2.left + off2.width / 2;
-    var y2 = off2.top + off2.height / 2;
+    var x2 = secondRect.left - overlayRect.left + secondRect.width / 2;
+    var y2 = secondRect.top - overlayRect.top + secondRect.height / 2;
 
     // distance
     var length = Math.sqrt(((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)));

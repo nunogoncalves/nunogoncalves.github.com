@@ -46,8 +46,8 @@ $.rules = {
     $.each($.ticTacToe.winningCombinations, function(i, winningCombination) {
       var count = 0
       $.each(winningCombination, function(i, cellClass) {
-          a = "td[data-compass='" + cellClass + "'] img." + $.ticTacToe.playerNames[$.ticTacToe.nextPlayer]
-        if ($(innerGameTable).find(a).length === 1) {
+          var selector = "td[data-compass='" + cellClass + "'] img." + $.ticTacToe.playerNames[$.ticTacToe.nextPlayer]
+        if ($(innerGameTable).find(selector).length === 1) {
           count++
         }
       })
@@ -61,7 +61,7 @@ $.rules = {
   },
 
   tieAtSmallGame: function(innerGameTable) {
-    $(innerGameTable).find("img").length === 9
+    return $(innerGameTable).find("td.playedAlready").length === 9;
   },
 
   nextSubGameToPlay: function($cell) {
@@ -69,16 +69,22 @@ $.rules = {
   },
 
   winner: function() {
-    let finishedTables = $(".inner_game.wonTable")
-    if (finishedTables.length < 3) {
-      return
+    var winners = $.ticTacToe.closedGamesWinners;
+    var winningLines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (var i = 0; i < winningLines.length; i++) {
+      var line = winningLines[i];
+      var player = winners[line[0]];
+
+      if (player && player === winners[line[1]] && player === winners[line[2]]) {
+        return { player: player, line: i };
+      }
     }
 
-
-    //$(".playedAlready").
-    // $(".inner_game.wonTable")
-    //$(".inner_game.wonTable")[0].className.split(" ").includes("center")
+    return null;
   }
 }
-
-
