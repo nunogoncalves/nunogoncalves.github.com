@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css?v=3" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet' type='text/css'>
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -17,37 +17,41 @@
     <div id="content"></div>
 
     <script id="profile_template" type="text/x-handlebars-template">
-      <div class="centered body">
-        <div>
-          <div style="display: inline-block;float: left;">
-            <img class="avatar" src="{{avatar_url}}">
-          </div>
-          <div class="name_and_title">
-            <div class="profile_info">{{name}}</div>
-            <div class="profile_info">{{title}}</div>
-            <div class="profile_info">{{location}}</div>
-          </div>
-        </div>
-        </br>
-        <div style="float: left">
-          <span>
-            <a href="mailto:{{email}}" target="_blank"><img class="source_icon" src="{{email_url}}"></a>
-          </span>
-          {{#each social_sources}}
-            <span>
-              <a href="{{link}}" target="_blank"><img class="source_icon" src="{{image_url}}"></a>
-            </span>
-          {{/each}}
-        </div>
-        <div>
-          <iframe width="420" height="236"  src="https://www.youtube.com/embed/Tcm8i2sr4eA"></iframe>
-          <div class="caption">Life project using custom made tools (iOS and macOS).</div>
-        </div>
+      <main class="profile-page">
+        <section class="profile-card" aria-labelledby="profile-name">
+          <header class="profile-header">
+            <img id="profile-avatar" class="avatar" src="{{avatar_url}}" alt="{{name}}">
+            <div class="name_and_title">
+              <h1 id="profile-name" class="profile_info">{{name}}</h1>
+              <p class="profile_info profile-title">{{title}}</p>
+              <p class="profile_info profile-location">{{location}}</p>
+            </div>
+          </header>
 
-        <div>
-          Play some tic tac toe ultimate! <a target="blank" href="http://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">here!</a>
-        </div>
-      </div>
+          <nav class="social-links" aria-label="Social links">
+            <a class="social-link" href="mailto:{{email}}" aria-label="Email {{name}}">
+              <img class="source_icon" src="{{email_url}}" alt="Email">
+            </a>
+            {{#each social_sources}}
+              <a class="social-link" href="{{link}}" target="_blank" rel="noopener noreferrer" aria-label="{{name}}">
+                <img class="source_icon" src="{{image_url}}" alt="{{name}}">
+              </a>
+            {{/each}}
+          </nav>
+
+          <figure class="featured-video">
+            <div class="video-wrapper">
+              <iframe width="420" height="236" src="https://www.youtube.com/embed/Tcm8i2sr4eA" title="I've been taking a selfie for 10 years" loading="lazy" allowfullscreen></iframe>
+            </div>
+            <figcaption class="caption">Life project using custom made tools (iOS and macOS).</figcaption>
+          </figure>
+
+          <p class="project-link">
+            Play some tic tac toe ultimate!
+            <a target="_blank" rel="noopener noreferrer" href="https://nunogoncalves.github.io/TicTacToeUltimate/ultimate_tic_tac_toe.html">Explore it</a>
+          </p>
+        </section>
+      </main>
     </script>
 
     <script src="javascripts/main.js"></script>

@@ -1,56 +1,223 @@
 body {
   margin: 0;
-  padding: 0;
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(1rem, 4vw, 3rem);
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  place-items: center;
 
-  font-size: 20px;
+  font-size: clamp(1rem, 1.35vw, 1.25rem);
   font-family: 'Titillium Web', sans-serif;
   color: #DCDCDC;
-  text-shadow: 0 0 8px #D4D4D4;
+  text-shadow: 0 0 8px rgba(212, 212, 212, .45);
 
-  /* https://css-tricks.com/examples/FullPageBackgroundImage/css-1.php */
-  background: url('../images/laptop.jpg') no-repeat center center fixed; 
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background:
+    linear-gradient(rgba(5, 7, 7, .38), rgba(5, 7, 7, .52)),
+    url('../images/laptop.jpg') center / cover fixed no-repeat;
 }
 
-.profile_info {
+#content {
+  width: 100%;
+  display: grid;
+  place-items: center;
 }
 
-.centered {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  /* bring your own prefixes */
-  transform: translate(-50%, -50%);
-}
-
-.avatar {
-  border-radius: 50px;
-  height: 100px;
-  width: 100px;
-
-  display: block;
+.profile-page {
+  width: min(100%, 54rem);
   margin: 0 auto;
 }
 
-.source_icon {
-  height: 50px;
-  width: 50px;
-}
-
-.name_and_title {
+.profile-card {
+  width: 100%;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 1.25rem;
+  background: rgba(0, 0, 0, .3);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, .35);
+  backdrop-filter: blur(2px);
   text-align: center;
 }
 
+.profile-header {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 2rem);
+}
+
+.profile_info {
+  margin: 0;
+}
+
+#profile-name {
+  color: #fff;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.profile-title {
+  margin-top: .45rem;
+  color: #fff;
+  font-size: clamp(1.35rem, 3vw, 2.25rem);
+  line-height: 1.1;
+}
+
+.profile-location {
+  margin-top: .2rem;
+  color: #c6c6c6;
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem);
+  line-height: 1.1;
+}
+
+.avatar {
+  width: clamp(84px, 14vw, 128px);
+  height: clamp(84px, 14vw, 128px);
+  border: 3px solid rgba(255, 255, 255, .8);
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
+  box-shadow: 0 0 .75rem rgba(255, 255, 255, .3);
+}
+
+.social-links {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .65rem;
+  margin: 2rem 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, .18);
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(42px, 7vw, 54px);
+  height: clamp(42px, 7vw, 54px);
+  border-radius: .75rem;
+  transition: transform .2s ease, background-color .2s ease;
+}
+
+.social-link:hover,
+.social-link:focus-visible {
+  background: rgba(255, 255, 255, .12);
+  transform: translateY(-3px);
+}
+
+.source_icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.name_and_title {
+  min-width: 0;
+}
+
+.featured-video {
+  margin: 0;
+}
+
+.video-wrapper {
+  width: min(100%, 420px);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: .5rem;
+  box-shadow: 0 .75rem 2rem rgba(0, 0, 0, .35);
+}
+
+.video-wrapper iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+}
+
 .caption {
-  font-size: 10px;
-  font-family: 'Titillium Web', sans-serif;
-  text-shadow: 0 0;
+  margin-top: .65rem;
+  color: #c6c6c6;
+  font-size: .85rem;
+  text-align: center;
+  text-shadow: none;
+}
+
+.project-link {
+  margin: 1.75rem 0 0;
+  text-align: center;
+}
+
+.project-link a {
+  display: inline-block;
+  margin-left: .35rem;
+  padding: .35rem .65rem;
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: .4rem;
+  color: #fff;
+  text-shadow: none;
+  transition: background-color .2s ease, border-color .2s ease;
+}
+
+.project-link a:hover,
+.project-link a:focus-visible {
+  border-color: #fff;
+  background: rgba(255, 255, 255, .14);
+}
+
+@media (max-width: 600px) {
+  body {
+    place-items: start center;
+    padding: 1rem;
+    background-attachment: scroll;
+  }
+
+  .profile-page {
+    margin: 1rem auto;
+  }
+
+  .profile-card {
+    padding: 1.25rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .profile-header {
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: .9rem;
+    text-align: center;
+  }
+
+  .avatar {
+    margin: 0 auto;
+  }
+
+  .social-links {
+    gap: .45rem;
+    margin: 1.5rem 0;
+  }
+
+  .social-link {
+    width: 44px;
+    height: 44px;
+  }
+
+  .caption {
+    font-size: .8rem;
+  }
+
+  .project-link {
+    line-height: 1.5;
+  }
+
+  .project-link a {
+    margin: .4rem 0 0;
+  }
 }
